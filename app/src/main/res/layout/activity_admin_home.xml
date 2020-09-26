@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:padding="15dp">
+        <LinearLayout
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_weight="1"
+                android:gravity="left"
+                android:layout_gravity="left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cart_item_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Resturant Name"
+                    android:textSize="30sp"
+                    android:textStyle="bold">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/cart_item_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="left"
+                    android:padding="15px"
+                    android:text="All Cuisines"
+                    android:textSize="18sp">
+
+                </TextView>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp">
+
+                <ImageButton
+                    android:id="@+id/add_activity"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:height="15dp"
+                    android:background="@drawable/menu"
+                    android:drawableLeft="@drawable/ic_baseline_remove_circle_outline_24"
+                    android:text="Remove"
+                    android:textColor="#ffffff">
+
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/notification"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:height="15dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/notification"
+                    android:drawableLeft="@drawable/ic_baseline_remove_circle_outline_24"
+                    android:text="Remove"
+                    android:textColor="#ffffff">
+
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/order"
+                    android:layout_width="50dp"
+                    android:layout_margin="10dp"
+                    android:layout_height="50dp"
+                    android:height="15dp"
+                    android:background="@drawable/ic_baseline_fastfood_24"
+                    android:drawableLeft="@drawable/ic_baseline_remove_circle_outline_24"
+                    android:text="Remove"
+                    android:textColor="#ffffff">
+
+                </ImageButton>
+
+
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/circle"
+        app:queryHint="Search Dish" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/cart_items">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_gravity="bottom|right"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/cartbutton"
+
+            android:padding="60dp"
+            android:layout_margin="15dp"
+            android:background="@drawable/circularbutton"
+            android:textColor="@android:color/white"
+             android:src="@drawable/plus"></ImageButton>
+
+
+
+
+
+    </FrameLayout>
+</LinearLayout>
