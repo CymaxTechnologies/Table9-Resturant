@@ -2,11 +2,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:background="@drawable/background"
+    >
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/background"
         android:padding="10dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +25,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Items"
-                android:textSize="24sp"></TextView>
+                android:textSize="16sp"></TextView>
 
             <Button
                 android:layout_width="30dp"
@@ -55,11 +59,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
+            android:textColor="@android:color/white"
             android:gravity="left"
             android:text="Total: "
             android:textSize="18sp"></TextView>
 
         <TextView
+            android:textColor="@android:color/white"
             android:id="@+id/total_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

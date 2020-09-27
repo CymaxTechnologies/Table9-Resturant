@@ -34,7 +34,9 @@ public class DetailedOrderActtivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_order_acttivity);
-        String table="1";
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.logo_24);
+        String table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
         c=getApplicationContext();
         String rest_id="123456789";
         final RecyclerView recycler=(RecyclerView)findViewById(R.id.order_id_description);

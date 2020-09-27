@@ -4,29 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".LoginActivity"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="20dp">
-    <EditText
+    android:background="@drawable/background"
+    android:layout_gravity="center_horizontal">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Email"
-        android:id="@+id/email"
-        android:layout_margin="5dp"
-        ></EditText>
-    <EditText
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo_white_large">
+
+        </ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="T9 App Resturant Admin"></TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/textsi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Email"
-        android:id="@+id/password"
-        android:layout_margin="5dp"
-        ></EditText>
- <Button
-     android:layout_margin="5dp"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:id="@+id/login"
-     android:text="Login"></Button>
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <TextView
+
+            android:id="@+id/texts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Login"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"></TextView>
+
+
+
+        <EditText
+            android:drawablePadding="5dp"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext"
+            android:hint="1234@sample.com"></EditText>
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edittext"
+            android:drawableLeft="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="5dp"
+            android:hint="*******"
+            android:inputType="textPassword"></EditText>
+
+
+        <ImageButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/next_32"
+            android:padding="10dp"
+            android:layout_margin="20dp"
+            android:background="@color/colorPrimary">
+
+            android:textColor="#0FFFFFFF"></ImageButton>
+
+        <TextView
+            android:id="@+id/signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textStyle="bold"
+            android:text="Login">
+        </TextView>
+    </LinearLayout>
 
 </LinearLayout>

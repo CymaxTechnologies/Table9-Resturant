@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Resturant App Admin</string>
+    <string name="app_name">T9 App Resturant</string>
     <string name="title_activity_admin_home">AdminHome</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,13 +35,33 @@ import java.util.List;
 
 public class OrdersActivity extends AppCompatActivity {
     ArrayList<Integer> data=new ArrayList<>();
+    Integer total_tables=0;
+    ArrayList<Integer> all_tables=new ArrayList<>();
+    String resturant_id="123456789";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.logo_24);
+        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("tables").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                total_tables=Integer.parseInt(dataSnapshot.getValue(String.class));
+            }
 
-        data.add(1);
-        data.add(2);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        for (int i=1;i<=10;i++)
+        {
+            all_tables.add(i);
+        }
+
+
+
 
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.orders);
         recyclerView.setHasFixedSize(true);
@@ -73,7 +96,7 @@ public class OrdersActivity extends AppCompatActivity {
         @Override
         public RecommendedAdapter.holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-            View listItem= layoutInflater.inflate(R.layout.order_item, parent, false);
+            View listItem= layoutInflater.inflate(R.layout.tables, parent, false);
             RecommendedAdapter.holder myHolder=new RecommendedAdapter.holder(listItem);
             return myHolder;
 
@@ -81,27 +104,20 @@ public class OrdersActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final RecommendedAdapter.holder holder, int position) {
-         final int table=data.get(position);
-         holder.name.setText("Table no "+Integer.toString(table)+" has placed order");
-            Glide.with(getApplicationContext())
-                    .load(R.drawable.cook)
-                    .into(holder.picture);
-            holder.    cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i=new Intent(getApplicationContext(),DetailedOrderActtivity.class);
-                    i.putExtra("table",table);
-                    startActivity(i);
-                }
-            });
-            holder.add.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i=new Intent(getApplicationContext(),FinalBillActivity.class);
-                    i.putExtra("table",table);
-                    startActivity(i);
-                }
-            });
+         final int table=all_tables.get(position);
+         holder.name.setText("Table no "+Integer.toString(table));
+         if(data.contains(table))
+         {
+             holder.cardView.setBackgroundColor(Color.GREEN);
+             holder.cardView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     Intent i=new Intent(getApplicationContext(),DetailedOrderActtivity.class);
+                     i.putExtra("table",table);
+                     startActivity(i);
+                 }
+             });
+         }
 
 
 
@@ -110,20 +126,19 @@ public class OrdersActivity extends AppCompatActivity {
         @Override
         public int getItemCount(){
 
-            return data.size();
+            return all_tables.size();
         }
         class holder extends RecyclerView.ViewHolder  {
             TextView name;
-            ImageButton picture;
-            Button add;
-            RatingBar ratingBar;
-            LinearLayout cardView;
+            ImageView picture;
+            ImageView not,wait;
+            CardView cardView;
             public holder(@NonNull View itemView) {
                 super(itemView);
 
-                name=(TextView)itemView.findViewById(R.id.cousine_name);
-                picture=(ImageButton) itemView.findViewById(R.id.picture);
-                add=(Button) itemView.findViewById(R.id.add);
+                name=(TextView)itemView.findViewById(R.id.tableno);
+                not=(ImageView)itemView.findViewById(R.id.notification_present) ;
+                wait=(ImageView)itemView.findViewById(R.id.waiting_prsent) ;
                 cardView=itemView.findViewById(R.id.card_order);
 
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ String restuarant_id="123456789";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.logo_24);
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.notification_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -63,6 +66,23 @@ String restuarant_id="123456789";
              final Notification n=data.get(position);
              String m="Table no "+n.table_no+" "+n.message;
              holder.msg.setText(m);
+             if(holder.msg.getText().toString().contains("Cutlery"))
+             {
+                 holder.img.setImageResource(R.drawable.cuttlery);
+             }
+             else if(holder.msg.getText().toString().contains("waiter"))
+             {
+                 holder.img.setImageResource(R.drawable.callwaiter);
+             }
+             else if(holder.msg.getText().toString().contains("bill"))
+             {
+                 holder.img.setImageResource(R.drawable.cook);
+             }
+             else
+             {
+                 holder.img.setImageResource(R.drawable.report);
+             }
+             holder.btn.setText("Serve now");
              holder.btn.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
@@ -74,6 +94,7 @@ String restuarant_id="123456789";
                  }
              });
 
+
         }
 
         @Override
@@ -83,7 +104,7 @@ String restuarant_id="123456789";
 
         class holder extends RecyclerView.ViewHolder
         {
-              ImageButton img;
+              ImageView img;
               TextView msg;
               Button btn;
             public holder(@NonNull View itemView) {

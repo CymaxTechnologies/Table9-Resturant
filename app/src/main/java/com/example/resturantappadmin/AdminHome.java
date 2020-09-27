@@ -1,16 +1,16 @@
 package com.example.resturantappadmin;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,12 +20,12 @@ import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,10 @@ public class AdminHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_home);
-        getSupportActionBar().hide();
+      //  getSupportActionBar().hide();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.logo_24);
+      //  Glide.with()
         ImageButton btn=(ImageButton) findViewById(R.id.cartbutton);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,22 +47,8 @@ public class AdminHome extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(),AddItem.class));
             }
         });
-        ImageButton order=(ImageButton) findViewById(R.id.order);
-        ImageButton not=(ImageButton)findViewById(R.id.notification);
-        order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
-               //   finish();
-            }
-        });
-        not.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),NotificationActivity.class));
-            //    finish();
-            }
-        });
+
+
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.cart_items);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -104,6 +93,10 @@ public class AdminHome extends AppCompatActivity {
             holder.name.setText(cuisine.getCousine_name());
             holder.description.setText(cuisine.getAbout());
             holder.availability.setText(cuisine.getTimming());
+            Glide.with(getApplicationContext())
+                    .load(cuisine.getPicture())
+
+                    .into(holder.picture);
             holder.ratingBar.setRating(5);
         }
 
@@ -161,5 +154,33 @@ public class AdminHome extends AppCompatActivity {
             return exampleFilter;
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mainmenu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.notification_present:
+            {
+                startActivity(new Intent(getApplicationContext(),NotificationActivity.class));
+                break;
+            }
+            case R.id.food:
+            {
+                startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+                break;
+            }
+            case R.id.logout:
+            {
+                break;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
