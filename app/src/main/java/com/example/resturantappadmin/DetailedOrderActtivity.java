@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,14 +31,14 @@ import java.util.ArrayList;
 public class DetailedOrderActtivity extends AppCompatActivity {
      ArrayList<Order>   order=new ArrayList<>();
      Context c;
-
+     String table;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_order_acttivity);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
-        String table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
+         table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
         c=getApplicationContext();
         String rest_id="123456789";
         final RecyclerView recycler=(RecyclerView)findViewById(R.id.order_id_description);
@@ -124,6 +126,19 @@ public class DetailedOrderActtivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.finalize)
+        {
+            Intent i=new Intent(getApplicationContext(),FinalBillActivity.class);
+            i.putExtra("table",table);
+            startActivity(i);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

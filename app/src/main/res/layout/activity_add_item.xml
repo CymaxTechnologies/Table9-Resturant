@@ -12,11 +12,11 @@
 
         android:padding="15dp">
         <LinearLayout
-            android:weightSum="2"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_weight="1"
+
                 android:gravity="left"
                 android:layout_gravity="left"
                 android:layout_width="match_parent"
@@ -24,23 +24,25 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:gravity="center"
                     android:id="@+id/cart_item_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Resturant Name"
+                    android:text="Zafran Chinese Den"
                     android:textSize="30sp"
                     android:textStyle="bold">
 
                 </TextView>
 
                 <TextView
+
                     android:id="@+id/cart_item_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:gravity="left"
+                    android:gravity="center"
                     android:padding="15px"
-                    android:text="Add Cuisine"
+                    android:text="Add Cuisines"
                     android:textSize="18sp">
 
                 </TextView>
@@ -48,46 +50,20 @@
 
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/cart_remove"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:height="15dp"
-                    android:background="@drawable/menu"
-                    android:drawableLeft="@drawable/ic_baseline_remove_circle_outline_24"
-                    android:text="Remove"
-                    android:textColor="#ffffff">
-
-                </ImageButton>
-
-
-
-
-
-            </LinearLayout>
 
 
 
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#c0c0c0"/>
+
 
 
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView
         android:padding="10dp"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ScrollView
@@ -95,58 +71,162 @@
             android:layout_height="match_parent"
             android:scrollbars="none">
         <LinearLayout
+            android:background="@drawable/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="20dp">
+
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/name"
-                android:hint="Name"
-                android:layout_margin="5dp"></EditText>
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Name"></EditText>
+
+            <EditText
                 android:id="@+id/ingredient"
-                android:hint="Ingredient"
-                android:layout_margin="5dp"></EditText>
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Ingredient"></EditText>
+
+            <EditText
                 android:id="@+id/about"
-                android:hint="About Cuisine"
-                android:layout_margin="5dp"></EditText>
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/dates"
-                android:hint="Availability Dates"
-                android:layout_margin="5dp"></EditText>
-            <EditText
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="About Cuisine"></EditText>
+            <LinearLayout
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/time"
-                android:hint="Availability Time"
-                android:layout_margin="5dp"></EditText>
-            <EditText
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:layout_width="188dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_light"
+                    android:text="Availability Dates"
+                    android:textColor="@android:color/white">
+
+                </TextView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:background="@drawable/edittext"
+                        android:layout_weight="1"
+                        android:layout_width="30dp"
+                        android:layout_height="50dp"
+                        android:hint="9/11"
+                        android:id="@+id/date_start"
+                        ></EditText>
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="30dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+
+                        android:text="to"></TextView>
+                    <EditText
+                        android:id="@+id/date_end"
+                        android:background="@drawable/edittext"
+                        android:layout_weight="1"
+
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:hint="9/11"></EditText>
+
+
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_margin="5dp"
+                    android:layout_width="188dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_blue_light"
+                    android:text="Availability Times"
+                    android:textColor="@android:color/white">
+
+                </TextView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:background="@drawable/edittext"
+                        android:layout_weight="1"
+                        android:layout_width="30dp"
+                        android:layout_height="50dp"
+                        android:hint="9:00 AM"
+                        android:id="@+id/time_start"
+                        ></EditText>
+                    <TextView
+                        android:layout_weight="1"
+                        android:layout_width="30dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+
+                        android:text="to"></TextView>
+                    <EditText
+                        android:id="@+id/time_end"
+                        android:background="@drawable/edittext"
+                        android:layout_weight="1"
+
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:hint="6:00PM"></EditText>
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+                      <EditText
                 android:id="@+id/price"
-                android:hint="Price"
-                android:layout_margin="5dp"></EditText>
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Price"></EditText>
+
+            <EditText
                 android:id="@+id/offer"
-                android:hint="Offer"
-                android:layout_margin="5dp"></EditText>
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Offer"></EditText>
+
+            <EditText
                 android:id="@+id/discount"
-                android:hint="Iscounted Price"
-                android:layout_margin="5dp"></EditText>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Iscounted Price"></EditText>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -154,24 +234,29 @@
                 android:weightSum="2"
                 android:layout_margin="5dp">
                 <Button
+                    android:background="@drawable/photo_48_orange"
                     android:layout_weight="1"
                     android:layout_margin="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Image"
+                    android:backgroundTint="@android:color/white"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+
                     android:id="@+id/pictre"></Button>
                 <Button
+                    android:background="@drawable/video_48_orange"
                     android:layout_weight="1"
                     android:layout_margin="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Vider"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:backgroundTint="@android:color/white"
                     android:id="@+id/video"></Button>
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/addItem"
+
+                android:background="@drawable/edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"

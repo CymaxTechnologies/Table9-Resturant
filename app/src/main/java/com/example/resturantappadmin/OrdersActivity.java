@@ -108,7 +108,10 @@ public class OrdersActivity extends AppCompatActivity {
          holder.name.setText("Table no "+Integer.toString(table));
          if(data.contains(table))
          {
-             holder.cardView.setBackgroundColor(Color.GREEN);
+             Glide.with(getApplicationContext()).load(R.drawable.notification_active).into(holder.not);
+             holder.not.setPadding(0,0,0,0);
+         //    Glide.with(getApplicationContext()).load(R.drawable.table_occupied).into(holder.picture);
+            // holder.cardView.setBackgroundColor(Color.GREEN);
              holder.cardView.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
@@ -135,7 +138,7 @@ public class OrdersActivity extends AppCompatActivity {
             CardView cardView;
             public holder(@NonNull View itemView) {
                 super(itemView);
-
+                picture=(ImageView)itemView.findViewById(R.id.emptytable) ;
                 name=(TextView)itemView.findViewById(R.id.tableno);
                 not=(ImageView)itemView.findViewById(R.id.notification_present) ;
                 wait=(ImageView)itemView.findViewById(R.id.waiting_prsent) ;

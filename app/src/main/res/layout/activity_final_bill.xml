@@ -10,6 +10,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/main_layout"
+    android:background="@drawable/background"
     tools:context=".FinalBillActivity">
 
     <TextView
@@ -17,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:gravity="center"
-
-        android:text="Resturant Name"
+        android:textColor="@android:color/white"
+        android:text="Zafran Chinese den"
         android:textSize="24sp">
 
     </TextView>
@@ -29,6 +30,7 @@
        android:orientation="horizontal"
        android:weightSum="2">
        <TextView
+           android:textColor="@android:color/white"
            android:layout_weight="1"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
@@ -36,6 +38,7 @@
            android:id="@+id/table"
            android:text="Table"></TextView>
        <TextView
+           android:textColor="@android:color/white"
            android:layout_weight="1"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
@@ -52,6 +55,7 @@
 
         </androidx.recyclerview.widget.RecyclerView>
         <TextView
+            android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"

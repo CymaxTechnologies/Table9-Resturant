@@ -1,15 +1,22 @@
 package com.example.resturantappadmin;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,6 +31,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class AddItem extends AppCompatActivity {
@@ -35,19 +44,113 @@ public class AddItem extends AppCompatActivity {
     DatabaseReference myRef = database.getReference().child("123456789").child("Cuisine");
     int PICK_IMAGE_REQUEST=1;
     Uri filePath;
-
+    EditText sd,ed;
+    EditText st,et;
+    String sdate="";
+    String edate="";
+    String stime="";
+    String etime="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
         getSupportActionBar().hide();
+        sd=(EditText) findViewById(R.id.date_start);
+        ed=(EditText) findViewById(R.id.date_end);
+        st=(EditText) findViewById(R.id.time_start);
+        et=(EditText) findViewById(R.id.time_end) ;
+        final DatePickerDialog[] picker = new DatePickerDialog[1];
+        final TimePickerDialog[] timePicker = new TimePickerDialog[1];
+        sd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker[0] = new DatePickerDialog(AddItem.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                sd.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                sdate=dayOfMonth+"/"+monthOfYear;
+                            }
+                        }, year, month, day);
+                picker[0].setTitle("Select starting Availability date");
+                picker[0].show();
+            }
+        });
+        ed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar cldr = Calendar.getInstance();
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                // date picker dialog
+                picker[0] = new DatePickerDialog(AddItem.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                edate=dayOfMonth+"/"+monthOfYear;
+                                ed.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                            }
+                        }, year, month, day);
+                picker[0].setTitle("Select ending Availability date");
+                picker[0].show();
+            }
+        });
+        st.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                timePicker[0] = new TimePickerDialog(AddItem.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        st.setText( selectedHour + ":" + selectedMinute);
+                        stime=selectedHour + ":" + selectedMinute;
+                    }
+                }, hour, minute, true);
+                timePicker[0].setTitle("Select Time");
+                timePicker[0].show();
+
+            }
+        });
+        et.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+
+                timePicker[0] = new TimePickerDialog(AddItem.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        et.setText( selectedHour + ":" + selectedMinute);
+                        etime=selectedHour + ":" + selectedMinute;
+                    }
+                }, hour, minute, true);
+                timePicker[0].setTitle("Select Time");
+                timePicker[0].show();
+
+            }
+        });
+
         Cuisine c=new Cuisine();
         name=(EditText)findViewById(R.id.name);
         ingredient=(EditText)findViewById(R.id.ingredient);
         about=(EditText)findViewById(R.id.about);
-        date=(EditText)findViewById(R.id.dates);
-        time=(EditText)findViewById(R.id.price);
+
+
         offer=(EditText)findViewById(R.id.offer);
         price=(EditText)findViewById(R.id.price);
         discount=(EditText)findViewById(R.id.discount);
@@ -62,14 +165,17 @@ public class AddItem extends AppCompatActivity {
             }
         });
         add.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(final View v) {
+                String date=sdate+"-"+edate;
+                String t=stime+"+"+etime;
                 Cuisine c=new Cuisine();
                 c.setCousine_name(name.getText().toString());
                 c.setIngredients(ingredient.getText().toString());
                 c.setAbout(ingredient.getText().toString());
-                c.setAvailability_dates(date.getText().toString());
-                c.setTimming(time.getText().toString());
+                c.setAvailability_dates(date);
+                c.setTimming(t);
                 c.setOffer(offer.getText().toString());
                 c.setDiscount_price(discount.getText().toString());
                 c.setPrice(price.getText().toString());
