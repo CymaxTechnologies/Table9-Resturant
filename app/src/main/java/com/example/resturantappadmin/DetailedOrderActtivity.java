@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,20 +32,48 @@ import java.util.ArrayList;
 
 public class DetailedOrderActtivity extends AppCompatActivity {
      ArrayList<Order>   order=new ArrayList<>();
+     ArrayList<Notification> data=new ArrayList<>();
      Context c;
+     String resturant_id="123456789";
      String table;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_order_acttivity);
+        final ProgressDialog progressDialog=new ProgressDialog(DetailedOrderActtivity.this);
+        progressDialog.setMessage("Please....");
+        progressDialog.setTitle("T9 App");
+        progressDialog.show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
          table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
         c=getApplicationContext();
+        TextView textView=(TextView)findViewById(R.id.table_no_detail) ;
+        textView.setText("Table no "+table);
         String rest_id="123456789";
         final RecyclerView recycler=(RecyclerView)findViewById(R.id.order_id_description);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
+        final RecyclerView recycler1=(RecyclerView)findViewById(R.id.order_id_notification);
+        recycler1.setHasFixedSize(true);
+        recycler1.setLayoutManager(new LinearLayoutManager(this));
+        FirebaseDatabase.getInstance().getReference().child(rest_id).child("orders").child(table).child("notification").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                data.clear();
+                for(DataSnapshot d:dataSnapshot.getChildren())
+                {
+                    data.add(d.getValue(Notification.class));
+                }
+                recycler1.setAdapter(new NotificationAdapter());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(rest_id).child("orders").child(table).child("pending");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -53,12 +83,13 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                 {
                     order.add(d.getValue(Order.class));
                 }
+                progressDialog.dismiss();
                 recycler.setAdapter(new recyclerView(order));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                 progressDialog.dismiss();
             }
         });
 
@@ -123,7 +154,69 @@ public class DetailedOrderActtivity extends AppCompatActivity {
             }
         }
     }
+    class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.holder>
+    {
+        @NonNull
+        @Override
+        public NotificationAdapter.holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            return new NotificationAdapter.holder(LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item,parent,false));
+        }
 
+        @Override
+        public void onBindViewHolder(@NonNull NotificationAdapter.holder holder, int position) {
+            final Notification n=data.get(position);
+            String m="Table no "+n.table_no+" "+n.message;
+            holder.msg.setText(m);
+            if(holder.msg.getText().toString().contains("Cutlery"))
+            {
+                holder.img.setImageResource(R.drawable.cuttlery);
+            }
+            else if(holder.msg.getText().toString().contains("waiter"))
+            {
+                holder.img.setImageResource(R.drawable.callwaiter);
+            }
+            else if(holder.msg.getText().toString().contains("bill"))
+            {
+                holder.img.setImageResource(R.drawable.cook);
+            }
+            else
+            {
+                holder.img.setImageResource(R.drawable.report);
+            }
+            holder.btn.setText("Serve now");
+            holder.btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(n.id).removeValue();
+                    Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
+                    data.remove(n);
+                    FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
+                    notifyDataSetChanged();
+                }
+            });
+
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+
+        class holder extends RecyclerView.ViewHolder
+        {
+            ImageView img;
+            TextView msg;
+            Button btn;
+            public holder(@NonNull View itemView) {
+                super(itemView);
+                img=itemView.findViewById(R.id.picture);
+                msg=itemView.findViewById(R.id.cousine_name);
+                btn=itemView.findViewById(R.id.add);
+            }
+        }
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);

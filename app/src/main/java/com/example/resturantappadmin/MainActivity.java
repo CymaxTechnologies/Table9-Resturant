@@ -13,25 +13,25 @@ import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
      EditText email,password;
-     ImageButton login;
+     Button login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         email=(EditText)findViewById(R.id.email);
         password=(EditText)findViewById(R.id.password);
-        login=(ImageButton) findViewById(R.id.login_button);
+        login=(Button) findViewById(R.id.login_button);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(email.getText().equals("admin@gmail.com")&&password.getText().equals("123456"))
                 {
-                    startActivity(new Intent(getApplicationContext(),AdminHome.class));
+                    startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
                 }
                 else
                 {
-                    startActivity(new Intent(getApplicationContext(),AdminHome.class));
+                    startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
                     finish();
 
                 }

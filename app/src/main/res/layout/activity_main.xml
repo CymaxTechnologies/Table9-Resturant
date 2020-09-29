@@ -69,16 +69,17 @@
             android:inputType="textPassword"></EditText>
 
 
-        <ImageButton
+        <Button
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:src="@drawable/next_32"
             android:padding="10dp"
+            android:text="Login"
             android:layout_margin="20dp"
-            android:background="@color/colorPrimary">
+            android:background="@android:color/white">
 
-            android:textColor="#0FFFFFFF"></ImageButton>
+            android:textColor="#0FFFFFFF"></Button>
 
         <TextView
             android:id="@+id/signup"

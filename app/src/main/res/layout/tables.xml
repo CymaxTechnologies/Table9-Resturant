@@ -17,9 +17,10 @@
            <ImageView
                android:layout_weight="1"
                android:id="@+id/emptytable"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/emptytable">
+               android:layout_width="50dp"
+               android:layout_height="50dp"
+               android:layout_marginRight="10dp"
+               android:src="@drawable/table_unoccupied">
 
            </ImageView>
 
@@ -38,7 +39,7 @@
                android:layout_height="50dp"
                android:layout_weight="1"
                android:padding="10dp"
-               android:src="@drawable/notification_empty_color"
+
               >
 
            </ImageView>
@@ -48,8 +49,8 @@
                android:layout_width="50dp"
                android:layout_height="50dp"
                android:layout_weight="1"
-               android:padding="10dp"
-               android:src="@drawable/waiting"
+
+
               >
 
            </ImageView>

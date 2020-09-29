@@ -96,14 +96,14 @@
             android:textColor="@android:color/white"></Button>
 
         <Button
-            android:layout_width="30dp"
             android:id="@+id/reject"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@android:color/holo_red_dark"
-            android:text="Served"
+            android:text="Reject"
             android:textColor="@android:color/white"></Button>
 
 

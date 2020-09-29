@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -61,6 +62,10 @@ public class FinalBillActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_bill);
+        final ProgressDialog progressDialog=new ProgressDialog(FinalBillActivity.this);
+        progressDialog.setMessage("Please....");
+        progressDialog.setTitle("T9 App");
+        progressDialog.show();
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.list_all_orders);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(FinalBillActivity.this));
@@ -84,7 +89,8 @@ public class FinalBillActivity extends AppCompatActivity {
                     cuisineArrayList.addAll(o.getCuisines());
                     integers.addAll(o.getCount());
                 }
-               /* for(Cuisine c:cuisineArrayList)
+
+                     progressDialog.dismiss();   /* for(Cuisine c:cuisineArrayList)
                 {
                     DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id);
                    ref.child("Cuisine").child(c.getCousine_name()).child("price").addValueEventListener(new ValueEventListener() {
@@ -121,6 +127,7 @@ public class FinalBillActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                    Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                   progressDialog.dismiss();
             }
         });
 

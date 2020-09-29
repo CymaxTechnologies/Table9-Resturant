@@ -36,7 +36,7 @@
 
                 <TextView
 
-                    android:id="@+id/cart_item_price"
+                    android:id="@+id/table_no_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
@@ -57,19 +57,43 @@
 
         </LinearLayout>
 
-
-
-
     </androidx.cardview.widget.CardView>
+
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/order_id_description"
-        >
+        ></androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:drawableLeft="@drawable/notification"
+        android:drawablePadding="5dp"
+        android:text="Notifications">
+
+    </TextView>
 
 
 
 
-    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/order_id_notification"
+        ></androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+</ScrollView>
 
 </LinearLayout>

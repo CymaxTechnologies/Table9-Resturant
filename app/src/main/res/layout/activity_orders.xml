@@ -43,7 +43,7 @@
 
                     android:gravity="center"
                     android:padding="15px"
-                    android:text="All Cuisines"
+                    android:text="All Tables"
                     android:textSize="18sp">
 
                 </TextView>

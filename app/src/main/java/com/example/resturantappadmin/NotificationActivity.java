@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,10 @@ String restuarant_id="123456789";
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        final ProgressDialog progressDialog=new ProgressDialog(NotificationActivity.this);
+        progressDialog.setMessage("Please....");
+        progressDialog.setTitle("T9 App");
+        progressDialog.show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.notification_list);
@@ -45,11 +50,12 @@ String restuarant_id="123456789";
                    data.add(d.getValue(Notification.class));
                }
                recyclerView.setAdapter(new NotificationAdapter());
+               progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+             progressDialog.dismiss();
             }
         });
     }
@@ -87,9 +93,9 @@ String restuarant_id="123456789";
                  @Override
                  public void onClick(View v) {
                FirebaseDatabase.getInstance().getReference().child(restuarant_id).child("notifications").child(n.id).removeValue();
-                     Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_LONG).show();
+                     Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
                      data.remove(n);
-
+               FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
                    notifyDataSetChanged();
                  }
              });
@@ -102,7 +108,7 @@ String restuarant_id="123456789";
             return data.size();
         }
 
-        class holder extends RecyclerView.ViewHolder
+         class holder extends RecyclerView.ViewHolder
         {
               ImageView img;
               TextView msg;

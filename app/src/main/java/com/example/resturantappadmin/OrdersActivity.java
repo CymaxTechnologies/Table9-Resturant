@@ -6,12 +6,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.text.style.TtsSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,6 +46,10 @@ public class OrdersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
+        final ProgressDialog progressDialog=new ProgressDialog(OrdersActivity.this);
+        progressDialog.setMessage("Please....");
+        progressDialog.setTitle("T9 App");
+        progressDialog.show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
         FirebaseDatabase.getInstance().getReference().child(resturant_id).child("tables").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,12 +85,12 @@ public class OrdersActivity extends AppCompatActivity {
                      data.add(Integer.parseInt(d.getKey()));
                  }
                 recyclerView.setAdapter(new RecommendedAdapter());
-
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                 progressDialog.dismiss();
             }
         });
 
@@ -108,7 +116,36 @@ public class OrdersActivity extends AppCompatActivity {
          holder.name.setText("Table no "+Integer.toString(table));
          if(data.contains(table))
          {
-             Glide.with(getApplicationContext()).load(R.drawable.notification_active).into(holder.not);
+             Glide.with(getApplicationContext()).load(R.drawable.table_occupied).into(holder.picture);
+             FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(Integer.toString(table)).child("pending").addValueEventListener(new ValueEventListener() {
+                 @Override
+                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   if(dataSnapshot.hasChildren())
+                   {
+                       Glide.with(getApplicationContext()).load(R.drawable.waiting).into(holder.wait);
+                   }
+                 }
+
+                 @Override
+                 public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                 }
+                 });
+             FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(Integer.toString(table)).child("notification").addValueEventListener(new ValueEventListener() {
+                 @Override
+                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                  if(dataSnapshot.hasChildren())
+                  {
+                      Glide.with(getApplicationContext()).load(R.drawable.not_24).into(holder.not);
+                  }
+                 }
+
+                 @Override
+                 public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                 }
+             });
+            // Glide.with(getApplicationContext()).load(R.drawable.notification_active).into(holder.not);
              holder.not.setPadding(0,0,0,0);
          //    Glide.with(getApplicationContext()).load(R.drawable.table_occupied).into(holder.picture);
             // holder.cardView.setBackgroundColor(Color.GREEN);
@@ -182,4 +219,26 @@ public class OrdersActivity extends AppCompatActivity {
 
     }*/
         }}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.order_activity_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.goto_notification)
+        {
+            startActivity(new Intent(getApplicationContext(),NotificationActivity.class));
+           // finish();
+        }
+        if(item.getItemId()==R.id.goto_addcuisine)
+        {
+            startActivity(new Intent(getApplicationContext(),AdminHome.class));
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
+

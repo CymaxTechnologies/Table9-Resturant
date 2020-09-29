@@ -74,7 +74,7 @@ public class AddItem extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                sd.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                sd.setText(dayOfMonth + "/" + (monthOfYear + 1) );
                                 sdate=dayOfMonth+"/"+monthOfYear;
                             }
                         }, year, month, day);
@@ -95,7 +95,7 @@ public class AddItem extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 edate=dayOfMonth+"/"+monthOfYear;
-                                ed.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                ed.setText( dayOfMonth + "/" + (monthOfYear + 1));
                             }
                         }, year, month, day);
                 picker[0].setTitle("Select ending Availability date");
@@ -169,7 +169,7 @@ public class AddItem extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 String date=sdate+"-"+edate;
-                String t=stime+"+"+etime;
+                String t=stime+"-"+etime;
                 Cuisine c=new Cuisine();
                 c.setCousine_name(name.getText().toString());
                 c.setIngredients(ingredient.getText().toString());
