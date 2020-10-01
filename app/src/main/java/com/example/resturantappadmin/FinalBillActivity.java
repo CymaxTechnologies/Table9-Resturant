@@ -48,9 +48,9 @@ import java.util.Date;
 
 public class FinalBillActivity extends AppCompatActivity {
       TextView date,tt;
-      String resturant_id="123456789";
-      int total;
-      int table;
+      String resturant_id="";
+      int total=0;
+      String table;
       ImageButton img;
 
 
@@ -66,6 +66,8 @@ public class FinalBillActivity extends AppCompatActivity {
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
         progressDialog.show();
+        table=(String)getIntent().getStringExtra("table") ;
+        resturant_id=(String)getIntent().getStringExtra("resturant_id");
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.list_all_orders);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(FinalBillActivity.this));
@@ -75,8 +77,8 @@ public class FinalBillActivity extends AppCompatActivity {
         final TextView t=(TextView)findViewById(R.id.final_bill_total);
         date.setText(new Date().toString());
 
-         table=getIntent().getIntExtra("table",0);
-        ta.setText("Table "+Integer.toString(table));
+       //  table=getIntent().getIntExtra("table",0);
+        ta.setText("Table no "+table);
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child("1").child("history");
 
         ref.addValueEventListener(new ValueEventListener() {
@@ -181,7 +183,7 @@ public class FinalBillActivity extends AppCompatActivity {
         else
         {
             final DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push();
-            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(Integer.toString(table)).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     ref.child("items").setValue(dataSnapshot.getValue());
@@ -232,4 +234,5 @@ public class FinalBillActivity extends AppCompatActivity {
         }
     }
 }
+
 

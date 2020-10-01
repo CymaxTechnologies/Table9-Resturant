@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -41,11 +42,15 @@ public class OrdersActivity extends AppCompatActivity {
     ArrayList<Integer> data=new ArrayList<>();
     Integer total_tables=0;
     ArrayList<Integer> all_tables=new ArrayList<>();
-    String resturant_id="123456789";
+    String resturant_id="";
+    String resturant__name="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        resturant_id=prefs.getString("resturant_id","123");
+        resturant__name=prefs.getString("name","123");
         final ProgressDialog progressDialog=new ProgressDialog(OrdersActivity.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
@@ -75,7 +80,7 @@ public class OrdersActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new RecommendedAdapter());
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child("123456789").child("orders");
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

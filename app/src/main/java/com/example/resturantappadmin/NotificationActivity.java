@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +26,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class NotificationActivity extends AppCompatActivity {
+    String resturant_id="";
+    String resturant_name="";
 ArrayList<Notification> data=new ArrayList<>();
-String restuarant_id="123456789";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        resturant_id=prefs.getString("resturant_id","123");
+        resturant_name=prefs.getString("name","123");
         final ProgressDialog progressDialog=new ProgressDialog(NotificationActivity.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
@@ -40,7 +46,7 @@ String restuarant_id="123456789";
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.notification_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(restuarant_id).child("notifications");
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -92,7 +98,7 @@ String restuarant_id="123456789";
              holder.btn.setOnClickListener(new View.OnClickListener() {
                  @Override
                  public void onClick(View v) {
-               FirebaseDatabase.getInstance().getReference().child(restuarant_id).child("notifications").child(n.id).removeValue();
+               FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(n.id).removeValue();
                      Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
                      data.remove(n);
                FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();

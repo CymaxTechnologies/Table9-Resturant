@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
 import android.view.LayoutInflater;
@@ -34,12 +35,16 @@ public class DetailedOrderActtivity extends AppCompatActivity {
      ArrayList<Order>   order=new ArrayList<>();
      ArrayList<Notification> data=new ArrayList<>();
      Context c;
-     String resturant_id="123456789";
-     String table;
+     String resturant_id="";
+     String table="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_order_acttivity);
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        resturant_id=prefs.getString("resturant_id","123");
+        table=(String)getIntent().getStringExtra("table");
+
         final ProgressDialog progressDialog=new ProgressDialog(DetailedOrderActtivity.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
@@ -50,14 +55,14 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         c=getApplicationContext();
         TextView textView=(TextView)findViewById(R.id.table_no_detail) ;
         textView.setText("Table no "+table);
-        String rest_id="123456789";
+        //String rest_id="123456789";
         final RecyclerView recycler=(RecyclerView)findViewById(R.id.order_id_description);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         final RecyclerView recycler1=(RecyclerView)findViewById(R.id.order_id_notification);
         recycler1.setHasFixedSize(true);
         recycler1.setLayoutManager(new LinearLayoutManager(this));
-        FirebaseDatabase.getInstance().getReference().child(rest_id).child("orders").child(table).child("notification").addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("notification").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -74,7 +79,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
 
             }
         });
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(rest_id).child("orders").child(table).child("pending");
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("pending");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -229,6 +234,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         {
             Intent i=new Intent(getApplicationContext(),FinalBillActivity.class);
             i.putExtra("table",table);
+            i.putExtra("resturant_id",resturant_id);
             startActivity(i);
             finish();
         }

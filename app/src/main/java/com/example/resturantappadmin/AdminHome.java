@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,10 +35,17 @@ import java.util.List;
 
 public class AdminHome extends AppCompatActivity {
     ArrayList<Cuisine> data=new ArrayList<>();
+    String resturant_id,resturant__name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_admin_home);
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        resturant_id=prefs.getString("resturant_id","123");
+        resturant__name=prefs.getString("name","123");
         final ProgressDialog progressDialog=new ProgressDialog(AdminHome.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
