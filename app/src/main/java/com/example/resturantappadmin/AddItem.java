@@ -8,14 +8,17 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -31,6 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -40,8 +46,10 @@ public class AddItem extends AppCompatActivity {
     Button picture,video,add;
     String pic_path="";
     String video_path="";
+    String resturant_id;
+    String resturant_name;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference().child("123456789").child("Cuisine");
+    DatabaseReference myRef;
     int PICK_IMAGE_REQUEST=1;
     Uri filePath;
     EditText sd,ed;
@@ -56,6 +64,12 @@ public class AddItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
         getSupportActionBar().hide();
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        resturant_id=prefs.getString("resturant_id","123");
+        resturant_name=prefs.getString("name","123");
+        TextView t=(TextView)findViewById(R.id.rest);
+        t.setText(resturant_name);
+        myRef = database.getReference().child(resturant_id).child("Cuisine");
         sd=(EditText) findViewById(R.id.date_start);
         ed=(EditText) findViewById(R.id.date_end);
         st=(EditText) findViewById(R.id.time_start);
@@ -108,16 +122,21 @@ public class AddItem extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 Calendar mcurrentTime = Calendar.getInstance();
+
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
 
                 timePicker[0] = new TimePickerDialog(AddItem.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        st.setText( selectedHour + ":" + selectedMinute);
-                        stime=selectedHour + ":" + selectedMinute;
+                        String time=getTime(selectedHour,selectedMinute);
+
+                        st.setText( time);
+                        stime=time;
                     }
                 }, hour, minute, true);
+
+
                 timePicker[0].setTitle("Select Time");
                 timePicker[0].show();
 
@@ -135,8 +154,10 @@ public class AddItem extends AppCompatActivity {
                 timePicker[0] = new TimePickerDialog(AddItem.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        et.setText( selectedHour + ":" + selectedMinute);
-                        etime=selectedHour + ":" + selectedMinute;
+                        String time=getTime(selectedHour,selectedMinute);
+
+                        et.setText( time);
+                        etime=time;
                     }
                 }, hour, minute, true);
                 timePicker[0].setTitle("Select Time");
@@ -295,5 +316,10 @@ public class AddItem extends AppCompatActivity {
                             });
         }
     }
-
+    private String getTime(int hr,int min) {
+        Time tme = new Time(hr,min,0);//seconds by default set to zero
+        Format formatter;
+        formatter = new SimpleDateFormat("h:mm a");
+        return formatter.format(tme);
+    }
 }

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,9 +44,11 @@ public class AdminHome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_admin_home);
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
         resturant__name=prefs.getString("name","123");
+        TextView t=(TextView)findViewById(R.id.rest);
+        t.setText(resturant__name);
         final ProgressDialog progressDialog=new ProgressDialog(AdminHome.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
@@ -58,7 +61,8 @@ public class AdminHome extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),AddItem.class));
+                Intent i=new Intent(getApplicationContext(),AddItem.class);
+                startActivity(i);
             }
         });
 
@@ -66,7 +70,7 @@ public class AdminHome extends AppCompatActivity {
         final RecyclerView recyclerView=(RecyclerView)findViewById(R.id.cart_items);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("123456789").child("Cuisine");
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

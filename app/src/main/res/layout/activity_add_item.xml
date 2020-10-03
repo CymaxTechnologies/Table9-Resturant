@@ -25,7 +25,8 @@
 
                 <TextView
                     android:gravity="center"
-                    android:id="@+id/cart_item_name"
+
+                    android:id="@+id/rest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Zafran Chinese Den"
@@ -225,7 +226,7 @@
                 android:layout_margin="5dp"
                 android:height="50dp"
                 android:background="@drawable/edittext"
-                android:hint="Iscounted Price"></EditText>
+                android:hint="Discounted Price"></EditText>
 
             <LinearLayout
                 android:layout_width="match_parent"

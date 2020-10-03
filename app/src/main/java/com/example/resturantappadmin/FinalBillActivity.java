@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -58,6 +60,7 @@ public class FinalBillActivity extends AppCompatActivity {
       ArrayList<Integer> integers=new ArrayList<>();
       ArrayList<String> prices=new ArrayList<>();
       DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id);
+      String resturant_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,12 @@ public class FinalBillActivity extends AppCompatActivity {
         progressDialog.setTitle("T9 App");
         progressDialog.show();
         table=(String)getIntent().getStringExtra("table") ;
-        resturant_id=(String)getIntent().getStringExtra("resturant_id");
+       // resturant_id=(String)getIntent().getStringExtra("resturant_id");
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        resturant_id=prefs.getString("resturant_id","123");
+        resturant_name=prefs.getString("name","123");
+        TextView resturant=(TextView)findViewById(R.id.rest);
+        resturant.setText(resturant_name);
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.list_all_orders);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(FinalBillActivity.this));

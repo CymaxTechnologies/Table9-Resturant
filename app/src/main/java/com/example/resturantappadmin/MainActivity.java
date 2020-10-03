@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +30,14 @@ public class MainActivity extends AppCompatActivity {
         email=(EditText)findViewById(R.id.email);
         password=(EditText)findViewById(R.id.password);
         login=(Button) findViewById(R.id.login_button);
-
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+      String  resturant_id=prefs.getString("resturant_id","123");
+      String resturant__name=prefs.getString("name","123");
+      if(!resturant_id.equals("123"))
+      {
+          startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+          finish();
+      }
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,23 +48,34 @@ public class MainActivity extends AppCompatActivity {
 
                 else
                 {
+
                     FirebaseDatabase.getInstance().getReference().child("resturants").child(email.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Toast.makeText(getApplicationContext(),"Enter",Toast.LENGTH_SHORT).show();
+
                             if(true)
                             {
                                   Resturant r=dataSnapshot.getValue(Resturant.class);
                                   if(r.password.equals(password.getText().toString()))
                                   {
-                                      SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                                      final String PREF_FILE_1 = "pref_file_1";
+                                      SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                                       editor.putString("resturant_id", r.contact);
                                       editor.putString("name",r.name);
-                                      editor.apply();
+                                    //  editor.apply();
                                       editor.commit();
-                                   Intent i=   new Intent(getApplicationContext(),OrdersActivity.class);
+                                      Toast.makeText(getApplicationContext(),"Login Succesfully",Toast.LENGTH_SHORT).show();
+
+                                      Intent i=   new Intent(getApplicationContext(),OrdersActivity.class);
 
                                       startActivity(i);
                                       finish();
+                                  }
+                                  else
+                                  {
+                                      Toast.makeText(getApplicationContext(),"Password dont match",Toast.LENGTH_SHORT).show();
+
                                   }
                             }
                             else
@@ -68,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_SHORT).show();
 
                         }
                     });

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,13 +38,17 @@ public class DetailedOrderActtivity extends AppCompatActivity {
      Context c;
      String resturant_id="";
      String table="";
+     String resturant_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_order_acttivity);
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
+        resturant_name=prefs.getString("name","123");
         table=(String)getIntent().getStringExtra("table");
+        TextView t=(TextView)findViewById(R.id.rest);
+        t.setText(resturant_name);
 
         final ProgressDialog progressDialog=new ProgressDialog(DetailedOrderActtivity.this);
         progressDialog.setMessage("Please....");
