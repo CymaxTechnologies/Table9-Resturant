@@ -93,11 +93,37 @@ public class OrdersActivity extends AppCompatActivity {
         progressDialog.show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
-        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("tables").addListenerForSingleValueEvent(new ValueEventListener() {
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.orders);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      //  recyclerView.setAdapter(new RecommendedAdapter());
+        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("total_tables").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
+                if (dataSnapshot.exists()) {
                     total_tables = Integer.parseInt(dataSnapshot.getValue(String.class));
+                    for (int i = 1; i <= total_tables; i++) {
+                        all_tables.add(i);
+                    }
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders");
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            data.clear();
+                            for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                data.add(Integer.parseInt(d.getKey()));
+                            }
+                            recyclerView.setAdapter(new RecommendedAdapter());
+
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            progressDialog.dismiss();
+                        }
+                    });
+
                 }
             }
 
@@ -106,9 +132,7 @@ public class OrdersActivity extends AppCompatActivity {
 
             }
         });
-        for (int i = 1; i <= 10; i++) {
-            all_tables.add(i);
-        }
+
         try{
        SendNotification("test","working","jhl");}
         catch (Exception e)
@@ -116,28 +140,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         }
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.orders);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecommendedAdapter());
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                data.clear();
-                for (DataSnapshot d : dataSnapshot.getChildren()) {
-                    data.add(Integer.parseInt(d.getKey()));
-                }
-                recyclerView.setAdapter(new RecommendedAdapter());
 
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                progressDialog.dismiss();
-            }
-        });
 
     }
 
@@ -287,6 +290,10 @@ public class OrdersActivity extends AppCompatActivity {
             editor.apply();
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
             finish();
+        }
+        if(item.getItemId()==R.id.new_arrival_menu)
+        {
+            startActivity(new Intent(getApplicationContext(), NewClientActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

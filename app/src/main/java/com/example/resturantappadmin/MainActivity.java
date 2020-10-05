@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                                   {
                                       final String PREF_FILE_1 = "pref_file_1";
                                       SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-                                      editor.putString("resturant_id", r.contact);
+                                      editor.putString("resturant_id", r.getData_id());
                                       editor.putString("name",r.name);
                                     //  editor.apply();
                                       editor.commit();
