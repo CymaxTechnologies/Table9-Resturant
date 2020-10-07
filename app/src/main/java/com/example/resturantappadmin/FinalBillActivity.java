@@ -87,7 +87,7 @@ public class FinalBillActivity extends AppCompatActivity {
 
        //  table=getIntent().getIntExtra("table",0);
         ta.setText("Table no "+table);
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child("1").child("history");
+        DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("history");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override

@@ -23,8 +23,12 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +41,7 @@ import java.util.List;
 public class AdminHome extends AppCompatActivity {
     ArrayList<Cuisine> data=new ArrayList<>();
     String resturant_id,resturant__name;
+     ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,7 +54,7 @@ public class AdminHome extends AppCompatActivity {
         resturant__name=prefs.getString("name","123");
         TextView t=(TextView)findViewById(R.id.rest);
         t.setText(resturant__name);
-        final ProgressDialog progressDialog=new ProgressDialog(AdminHome.this);
+        progressDialog=new ProgressDialog(AdminHome.this);
         progressDialog.setMessage("Please....");
         progressDialog.setTitle("T9 App");
         progressDialog.show();
@@ -74,6 +79,7 @@ public class AdminHome extends AppCompatActivity {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                data.clear();
                 for(DataSnapshot d:dataSnapshot.getChildren())
                 {
                     Cuisine co=d.getValue(Cuisine.class);
@@ -116,6 +122,28 @@ public class AdminHome extends AppCompatActivity {
                     .load(cuisine.getPicture())
 
                     .into(holder.picture);
+
+            holder.add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    DatabaseReference dbr=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine").child(cuisine.getCousine_name());
+                    dbr.removeValue().addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"Succesfuly removed",Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    notifyDataSetChanged();
+                }
+            });
             holder.ratingBar.setRating(5);
         }
 
@@ -197,6 +225,10 @@ public class AdminHome extends AppCompatActivity {
             }
             case R.id.logout:
             {
+                FirebaseAuth.getInstance().signOut();;
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                finish();
+
                 break;
             }
         }

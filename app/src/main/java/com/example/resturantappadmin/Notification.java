@@ -1,7 +1,15 @@
 package com.example.resturantappadmin;
 
 public class Notification {
-    String id,message,table_no,user_id,resturant_id;
+    String id,message,table_no,user_id,resturant_id,time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getResturant_id() {
         return resturant_id;

@@ -22,7 +22,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Toast.makeText(this,"Received",Toast.LENGTH_LONG).show();
+       // Toast.makeText(this,"Received",Toast.LENGTH_LONG).show();
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

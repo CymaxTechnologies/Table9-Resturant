@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -58,17 +60,22 @@ public class AddItem extends AppCompatActivity {
     String edate="";
     String stime="";
     String etime="";
+    ProgressDialog  progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
         getSupportActionBar().hide();
+        progressDialog=new ProgressDialog(AddItem.this);
+        progressDialog.setTitle("Please wait");
+        progressDialog.setMessage("Adding cuisine please wait");
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
         resturant_name=prefs.getString("name","123");
         TextView t=(TextView)findViewById(R.id.rest);
         t.setText(resturant_name);
+
         myRef = database.getReference().child(resturant_id).child("Cuisine");
         sd=(EditText) findViewById(R.id.date_start);
         ed=(EditText) findViewById(R.id.date_end);
@@ -189,6 +196,7 @@ public class AddItem extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(final View v) {
+                progressDialog.show();
                 String date=sdate+"-"+edate;
                 String t=stime+"-"+etime;
                 Cuisine c=new Cuisine();
@@ -202,10 +210,19 @@ public class AddItem extends AppCompatActivity {
                 c.setPrice(price.getText().toString());
                 c.setPicture(pic_path);
                 c.setVideo(video_path);
-                myRef.child(c.cousine_name).setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
+                DatabaseReference key=myRef.push();
+                c.setId(key.getKey());
+                key.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Snackbar.make(v,"Added succesfullly", BaseTransientBottomBar.LENGTH_LONG).show();
+                        progressDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar.make(v,"Error occured", BaseTransientBottomBar.LENGTH_LONG).show();
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -322,4 +339,5 @@ public class AddItem extends AppCompatActivity {
         formatter = new SimpleDateFormat("h:mm a");
         return formatter.format(tme);
     }
+
 }

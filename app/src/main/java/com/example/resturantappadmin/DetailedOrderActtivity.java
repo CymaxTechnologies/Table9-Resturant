@@ -129,10 +129,10 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                       holder.served.setOnClickListener(new View.OnClickListener() {
                           @Override
                           public void onClick(View v) {
-                              DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("123456789").child("orders").child(order.table).child("history").push();
+                              DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("history").push();
                               ref.setValue(order);
                               o.remove(order);
-                              ref=FirebaseDatabase.getInstance().getReference().child("123456789").child("orders").child(order.table).child("pending").child(order.order_id);
+                              ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.order_id);
                               ref.removeValue();
                               notifyDataSetChanged();
                               Toast.makeText(getApplicationContext(),"Order Served Succesfully",Toast.LENGTH_LONG).show();
