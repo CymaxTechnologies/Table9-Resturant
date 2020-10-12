@@ -163,6 +163,7 @@ public class NewClientActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 String returnedResult = data.getData().toString();
+                FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(returnedResult).child("user").setValue(no.user_id);
                 FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(no.user_id).setValue(returnedResult).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

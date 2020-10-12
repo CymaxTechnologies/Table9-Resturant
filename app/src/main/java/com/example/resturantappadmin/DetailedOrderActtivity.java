@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -122,7 +123,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull holder holder, int position) {
+        public void onBindViewHolder(@NonNull final holder holder, int position) {
                       final Order order=o.get(position);
                       holder.recyclerView.setAdapter(new single_line_adapter(order.getCuisines(),order.getCount()));
                       holder.textView.setText(order.getValue()+"");
@@ -135,7 +136,34 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                               ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.order_id);
                               ref.removeValue();
                               notifyDataSetChanged();
+                              FirebaseDatabase.getInstance().getReference().child("user").child(order.getCustomer_id()).child("my_orders").child(resturant_id).child(order.order_id).child("status").setValue("Served");
+
                               Toast.makeText(getApplicationContext(),"Order Served Succesfully",Toast.LENGTH_LONG).show();
+                          }
+                      });
+                      holder.accept.setOnClickListener(new View.OnClickListener() {
+                          @Override
+                          public void onClick(View v) {
+                              FirebaseDatabase.getInstance().getReference().child("user").child(order.getCustomer_id()).child("my_orders").child(resturant_id).child(order.order_id).child("status").setValue("Accepted");
+
+                              //FirebaseDatabase.getInstance().getReference().child("user").child(order.customer_id).child("my_orders").child(resturant_id).child(order.getOrder_id()).child("status").setValue("Accepted");
+                              holder.accept.setEnabled(false);
+                              holder.reject.setEnabled(false);
+                              Toast.makeText(getApplicationContext(),"Accepted",Toast.LENGTH_SHORT).show();
+                          }
+                      });
+                      holder.reject.setOnClickListener(new View.OnClickListener() {
+                          @Override
+                          public void onClick(View v) {
+                              FirebaseDatabase.getInstance().getReference().child("user").child(order.customer_id).child("my_orders").child(resturant_id).child(order.getOrder_id()).child("status").setValue("Rejected");
+                              holder.accept.setEnabled(false);
+                              holder.reject.setEnabled(false);
+                              DatabaseReference ref;
+                              ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.order_id);
+                              ref.removeValue();
+                              notifyDataSetChanged();
+                              Toast.makeText(getApplicationContext(),"Rejected",Toast.LENGTH_SHORT).show();
+
                           }
                       });
 
@@ -240,6 +268,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
             Intent i=new Intent(getApplicationContext(),FinalBillActivity.class);
             i.putExtra("table",table);
             i.putExtra("resturant_id",resturant_id);
+
             startActivity(i);
             finish();
         }

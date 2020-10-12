@@ -127,7 +127,7 @@ public class AdminHome extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     progressDialog.show();
-                    DatabaseReference dbr=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine").child(cuisine.getCousine_name());
+                    DatabaseReference dbr=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine").child(cuisine.getId());
                     dbr.removeValue().addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {

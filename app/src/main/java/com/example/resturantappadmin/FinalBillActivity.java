@@ -2,12 +2,15 @@ package com.example.resturantappadmin;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,10 +18,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.LayoutInflater;
@@ -33,7 +38,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +53,8 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,13 +64,15 @@ public class FinalBillActivity extends AppCompatActivity {
       int total=0;
       String table;
       ImageButton img;
-
-
+      boolean flag=true;
+      Bitmap b;
       ArrayList<Cuisine> cuisineArrayList=new ArrayList<>();
       ArrayList<Integer> integers=new ArrayList<>();
       ArrayList<String> prices=new ArrayList<>();
       DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id);
       String resturant_name;
+      String user_id="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,10 +82,22 @@ public class FinalBillActivity extends AppCompatActivity {
         progressDialog.setTitle("T9 App");
         progressDialog.show();
         table=(String)getIntent().getStringExtra("table") ;
+
        // resturant_id=(String)getIntent().getStringExtra("resturant_id");
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
         resturant_name=prefs.getString("name","123");
+        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("user").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                user_id=dataSnapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         TextView resturant=(TextView)findViewById(R.id.rest);
         resturant.setText(resturant_name);
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.list_all_orders);
@@ -89,7 +113,7 @@ public class FinalBillActivity extends AppCompatActivity {
         ta.setText("Table no "+table);
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("history");
 
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot d:dataSnapshot.getChildren())
@@ -188,35 +212,126 @@ public class FinalBillActivity extends AppCompatActivity {
         {
 
         }
+        else if(item.getItemId()==R.id.share)
+        {
+            if(b==null)
+            {
+                Toast.makeText(getApplicationContext(),"Please finalize bill first",Toast.LENGTH_LONG).show();
+                return true;
+            }
+            String message;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                message="Thank you for visiting us\nHere is your bill\nDate : "+LocalDate.now().toString()+"\n Time : "+LocalTime.now();
+            }
+            else
+            {
+                message="Thank you for visiting us\nHere is your bill";
+
+            }
+            shareImage(b,message);
+        }
         else
         {
-            final DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push();
-            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).child("history").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    ref.child("items").setValue(dataSnapshot.getValue());
-                    ref.child("total").setValue(total);
-                    //finish();
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                        {
+                            if(!flag)
+                            {
+                                Toast.makeText(getApplicationContext(),"Bill is already generated You can share by pressing share Icon",Toast.LENGTH_LONG).show();
+                                break;
 
-                   // FirebaseDatabase.getInstance().getReference().child(resturant_id).child(Integer.toString(table)).removeValue();
+                            }
+                            flag=false;
+                           String key= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push().getKey();
+                           final OrderHistory history=new OrderHistory();
+                           history.setCount(integers);
+                           history.setCuisines(cuisineArrayList);
+                           history.setPrices(prices);
+                           history.setResturant_id(resturant_id);
+                           history.setUser_id(user_id);
+                           history.setTable(table);
+                           history.setDate(LocalDate.now().toString());
+                           history.setTime(LocalTime.now().toString());
+                           history.setPayment_method("");
+                           history.setRating("");
+                           history.setOrder_id(key);
+                           history.setResturant_name(resturant_name);
+                           FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").child(key).setValue(history).addOnSuccessListener(new OnSuccessListener<Void>() {
+                               @Override
+                               public void onSuccess(Void aVoid) {
+                                   if(user_id!="")
+                                   {
+                                       FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).removeValue();
+                                   String k=    FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").push().getKey();
+
+                                      FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(k).setValue(history);
+                                      FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
+                                       FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                           @Override
+                                           public void onSuccess(Void aVoid) {
+
+                                           }
+                                       }).addOnFailureListener(new OnFailureListener() {
+                                           @Override
+                                           public void onFailure(@NonNull Exception e) {
+                                               Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                           }
+                                       });
+
+                                   }
+
+                               }
+                           });
+
+                            File file = new File(Environment.getExternalStorageDirectory() + "/Table9/");
+                            if (!file.mkdirs()) {
+                                file.mkdirs();
+                            }
+                            PDFHelper pdfHelper=new PDFHelper(file,getApplicationContext());
+                            View view =(ScrollView)findViewById(R.id.scrol );
+
+                             b=pdfHelper.getBitmapFromView(view);
+                            //img.setImageBitmap(b);
+                            String message;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                message="Thank you for visiting us\nHere is your bill\nDate : "+LocalDate.now().toString()+"\n Time : "+LocalTime.now();
+                            }
+                            else
+                            {
+                                message="Thank you for visiting us\nHere is your bill";
+
+                            }
+                            shareImage(b,message);
+                            pdfHelper.saveImageToPDF(view,b,new Date().toString()+"slip");
+                            //finish();
+                            Toast.makeText(getApplicationContext(),"Bill Generated Succesfully",Toast.LENGTH_LONG).show();
+                           break;
+
+                        }
+
+
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                        {
+                            dialog.dismiss();
+                            break;
+                        }
+
+                    }
                 }
+            };
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(FinalBillActivity.this);
+            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
 
-                }
-            });
-            //create folder
-            File file = new File(Environment.getExternalStorageDirectory() + "/Table9/");
-            if (!file.mkdirs()) {
-                file.mkdirs();
-            }
-            PDFHelper pdfHelper=new PDFHelper(file,getApplicationContext());
-            View view =(ScrollView)findViewById(R.id.scrol );
 
-            Bitmap b=pdfHelper.getBitmapFromView(view);
-            img.setImageBitmap(b);
-           pdfHelper.saveImageToPDF(view,b,new Date().toString()+"slip");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -241,6 +356,22 @@ public class FinalBillActivity extends AppCompatActivity {
             break;
         }
     }
+
+    void shareImage(Bitmap bitmap, String text){
+        //bitmap is ur image and text is which is written in edtitext
+        //you will get the image from the path
+        String pathofBmp=
+                MediaStore.Images.Media.insertImage(getContentResolver(),
+                        bitmap,"title", null);
+        Uri uri = Uri.parse(pathofBmp);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("image/*");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "T9 App");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(shareIntent, "Chose method to share receipt"));
+    }
+
 }
 
 
