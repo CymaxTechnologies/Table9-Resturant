@@ -22,7 +22,9 @@
         <activity android:name=".NewClientActivity" />
         <activity android:name=".FinalBillActivity" />
         <activity android:name=".DetailedOrderActtivity" />
-        <activity android:name=".NotificationActivity" />
+        <activity android:name=".NotificationActivity" >
+
+        </activity>
         <activity android:name=".OrdersActivity" />
 
         <service android:name=".MyFireBaseMessagingService">
@@ -44,7 +46,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+         </activity>
     </application>
 
 </manifest>

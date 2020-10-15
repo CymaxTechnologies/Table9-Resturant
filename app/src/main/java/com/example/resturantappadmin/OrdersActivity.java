@@ -160,8 +160,8 @@ public class OrdersActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(final RecommendedAdapter.holder holder, int position) {
-            final int table = all_tables.get(position);
+        public void onBindViewHolder(final RecommendedAdapter.holder holder, final int position) {
+              int table = all_tables.get(position);
             holder.name.setText("Table no " + Integer.toString(table));
             if (data.contains(table)) {
                 Glide.with(getApplicationContext()).load(R.drawable.table_occupied).into(holder.picture);
@@ -198,8 +198,9 @@ public class OrdersActivity extends AppCompatActivity {
                 holder.cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         Intent i = new Intent(getApplicationContext(), DetailedOrderActtivity.class);
-                        i.putExtra("table", table);
+                        i.putExtra("table",  all_tables.get(position));
                         startActivity(i);
                     }
                 });

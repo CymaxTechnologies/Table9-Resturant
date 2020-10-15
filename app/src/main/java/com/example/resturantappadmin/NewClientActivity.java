@@ -34,6 +34,7 @@ public class NewClientActivity extends AppCompatActivity {
     String resturant_name;
     Notification no;
     ArrayList<Notification> data=new ArrayList<>();
+    ArrayList<String> rec=new ArrayList<>();
 
     ArrayList<String> list=new ArrayList<>();
     @Override
@@ -111,6 +112,7 @@ public class NewClientActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull holder holder, int position) {
             final Notification n=data.get(position);
+
            holder. reject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

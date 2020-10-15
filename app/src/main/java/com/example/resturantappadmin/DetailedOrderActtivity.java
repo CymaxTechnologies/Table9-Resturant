@@ -47,7 +47,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
         resturant_name=prefs.getString("name","123");
-        table=(String)getIntent().getStringExtra("table");
+        //table=(String)getIntent().getStringExtra("table");
         TextView t=(TextView)findViewById(R.id.rest);
         t.setText(resturant_name);
 
@@ -57,7 +57,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         progressDialog.show();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.logo_24);
-         table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
+        table=Integer.toString((Integer)getIntent().getIntExtra("table",0)) ;
         c=getApplicationContext();
         TextView textView=(TextView)findViewById(R.id.table_no_detail) ;
         textView.setText("Table no "+table);

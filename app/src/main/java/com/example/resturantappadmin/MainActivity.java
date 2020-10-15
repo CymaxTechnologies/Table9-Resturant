@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
       String resturant__name=prefs.getString("name","123");
       if(!resturant_id.equals("123"))
       {
-          startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+          startActivity(new Intent(getApplicationContext(),NotificationActivity.class));
           finish();
       }
         login.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                                       editor.commit();
                                       Toast.makeText(getApplicationContext(),"Login Succesfully",Toast.LENGTH_SHORT).show();
 
-                                      Intent i=   new Intent(getApplicationContext(),OrdersActivity.class);
+                                      Intent i=   new Intent(getApplicationContext(),NotificationActivity.class);
 
                                       startActivity(i);
                                       finish();
