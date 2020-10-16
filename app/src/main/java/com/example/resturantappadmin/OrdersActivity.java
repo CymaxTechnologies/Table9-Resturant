@@ -292,10 +292,7 @@ public class OrdersActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
             finish();
         }
-        if(item.getItemId()==R.id.new_arrival_menu)
-        {
-            startActivity(new Intent(getApplicationContext(), NewClientActivity.class));
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

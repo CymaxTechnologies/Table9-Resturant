@@ -14,11 +14,9 @@
             android:title="Logout">
 
         </item>
-    <item
-        android:id="@+id/new_arrival_menu"
-        android:title="New Arrivals">
 
-    </item>
+
+
 
 
 </menu>

@@ -87,6 +87,41 @@ ArrayList<String> rec=new ArrayList<String>();
         public void onBindViewHolder(@NonNull final holder holder, int position) {
              final Notification n=data.get(position);
              final String m="Table no "+n.table_no+" "+n.message;
+             if(n.message.equals("New Order"))
+             {
+                 FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").addValueEventListener(new ValueEventListener() {
+                     @Override
+                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                         UserProfile userProfile=dataSnapshot.getValue(UserProfile.class);
+                         if(userProfile==null);
+                         {
+                             userProfile=new UserProfile();
+                         }
+                         String str="New order From "+userProfile.name+"\n"+"Table no "+n.table_no;
+                         holder.msg.setText(str);
+                     }
+
+                     @Override
+                     public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                     }
+                 });
+                 holder.btn.setText("View Order");
+                 holder.btn.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View v) {
+                         FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(n.id).removeValue();
+                         // Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
+                         data.remove(n);
+                         rec.remove(n.user_id);
+                         FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
+                         startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+                         notifyDataSetChanged();
+                     }
+                 });
+
+
+             }
              if(n.message.equals("New Client"))
              {  final String x="New Arrival \n";
                       if(rec.contains(n.user_id))
@@ -186,7 +221,7 @@ ArrayList<String> rec=new ArrayList<String>();
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.menu_add_item)
         {
-            startActivity(new Intent(getApplicationContext(),AddItem.class));
+            startActivity(new Intent(getApplicationContext(),AdminHome.class));
         }
         if(item.getItemId()==R.id.menu_logout)
         {
