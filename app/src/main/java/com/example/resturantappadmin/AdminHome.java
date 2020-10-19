@@ -1,16 +1,22 @@
 package com.example.resturantappadmin;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +40,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +83,7 @@ public class AdminHome extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 data.clear();
@@ -84,6 +91,7 @@ public class AdminHome extends AppCompatActivity {
                 {
                     Cuisine co=d.getValue(Cuisine.class);
                     data.add(co);
+
                 }
                 recyclerView.setAdapter(new RecommendedAdapter());
                 progressDialog.dismiss();
@@ -116,7 +124,19 @@ public class AdminHome extends AppCompatActivity {
         public void onBindViewHolder(final RecommendedAdapter.holder holder, int position) {
             final Cuisine cuisine = data.get(position);
             holder.name.setText(cuisine.getCousine_name());
-            holder.description.setText(cuisine.getAbout());
+            if(cuisine.price.equals(cuisine.discount_price))
+            {
+                holder.description.setText("Rs: "+cuisine.price);
+            }
+            else
+            {
+                holder.description.setText("Rs: "+cuisine.price+"   "+cuisine.discount_price,TextView.BufferType.SPANNABLE);
+
+                Spannable spannable = (Spannable) holder.description.getText();
+                spannable.setSpan(new StrikethroughSpan(), 4, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            }
+
             holder.availability.setText(cuisine.getTimming());
             Glide.with(getApplicationContext())
                     .load(cuisine.getPicture())
@@ -127,24 +147,55 @@ public class AdminHome extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     progressDialog.show();
-                    DatabaseReference dbr=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine").child(cuisine.getId());
-                    dbr.removeValue().addOnFailureListener(new OnFailureListener() {
+                    final DatabaseReference dbr=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("Cuisine").child(cuisine.getId());
+                    final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    {
+                                        dbr.removeValue().addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                progressDialog.dismiss();
+                                                data.remove(cuisine);
+                                                Toast.makeText(getApplicationContext(),"Succesfuly removed",Toast.LENGTH_LONG).show();
+                                            }
+
+                                        });
+
+                                    }
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
                         }
-                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(),"Succesfuly removed",Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AdminHome.this);
+                    builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+
                     notifyDataSetChanged();
                 }
             });
             holder.ratingBar.setRating(5);
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i=new Intent(getApplicationContext(),AddItem.class);
+                    i.putExtra("cuisine",cuisine);
+                    startActivity(i);
+                }
+            });
         }
 
         @Override
@@ -157,6 +208,7 @@ public class AdminHome extends AppCompatActivity {
             ImageButton picture;
             Button add;
             RatingBar ratingBar;
+            CardView card;
             public holder(@NonNull View itemView) {
                 super(itemView);
 
@@ -166,6 +218,8 @@ public class AdminHome extends AppCompatActivity {
                 picture=(ImageButton)itemView.findViewById(R.id.picture);
                 add=(Button)itemView.findViewById(R.id.add);
                 ratingBar=(RatingBar)itemView.findViewById(R.id.ratingBar);
+                card=(CardView)itemView.findViewById(R.id.cuisine_card);
+
 
 
             }
@@ -226,6 +280,8 @@ public class AdminHome extends AppCompatActivity {
             case R.id.logout:
             {
                 FirebaseAuth.getInstance().signOut();;
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(resturant_id);
+
                 startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 finish();
 

@@ -48,6 +48,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,7 +84,7 @@ public class OrdersActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id = prefs.getString("resturant_id", "123");
         resturant__name = prefs.getString("name", "123");
-        FirebaseMessaging.getInstance().subscribeToTopic(resturant_id);
+
         TextView t = (TextView) findViewById(R.id.rest);
         t.setText(resturant__name);
        // FirebaseMessaging.getInstance().subscribeToTopic("all");
@@ -289,6 +290,7 @@ public class OrdersActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();
             editor.apply();
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(resturant_id);
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
             finish();
         }

@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.EventListener;
@@ -87,7 +88,7 @@ ArrayList<String> rec=new ArrayList<String>();
         public void onBindViewHolder(@NonNull final holder holder, int position) {
              final Notification n=data.get(position);
              final String m="Table no "+n.table_no+" "+n.message;
-             if(n.message.equals("New Order"))
+             if(n.message.contains("New Order"))
              {
                  FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").addValueEventListener(new ValueEventListener() {
                      @Override
@@ -97,7 +98,7 @@ ArrayList<String> rec=new ArrayList<String>();
                          {
                              userProfile=new UserProfile();
                          }
-                         String str="New order From "+userProfile.name+"\n"+"Table no "+n.table_no;
+                         String str="New order From Table no "+n.table_no;
                          holder.msg.setText(str);
                      }
 
@@ -106,7 +107,10 @@ ArrayList<String> rec=new ArrayList<String>();
 
                      }
                  });
+
+                 holder.img.setImageResource(R.drawable.new_order_icon);
                  holder.btn.setText("View Order");
+                 holder.msg.setText(n.message);
                  holder.btn.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
@@ -115,14 +119,36 @@ ArrayList<String> rec=new ArrayList<String>();
                          data.remove(n);
                          rec.remove(n.user_id);
                          FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
-                         startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+                         Intent i=new Intent(getApplicationContext(),DetailedOrderActtivity.class);
+                         i.putExtra("table",Integer.parseInt(n.getTable_no()));
+                         startActivity(i);
                          notifyDataSetChanged();
                      }
                  });
 
-
+                 return;
              }
-             if(n.message.equals("New Client"))
+         /*   if (n.message.contains("Order"))
+            {
+                holder.msg.setText(n.message);
+                holder.btn.setText("View Order");
+                holder.btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(n.id).removeValue();
+                        // Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
+                        data.remove(n);
+                        rec.remove(n.user_id);
+                        FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
+                        startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+                        notifyDataSetChanged();
+
+                    }
+                });
+                holder.img.setImageResource(R.drawable.customer_icon);
+                return;
+            }*/
+             if(n.message.contains("waiting"))
              {  final String x="New Arrival \n";
                       if(rec.contains(n.user_id))
                       {
@@ -130,15 +156,13 @@ ArrayList<String> rec=new ArrayList<String>();
 
                       }
                       rec.add(n.resturant_id);
-                 FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").addValueEventListener(new ValueEventListener() {
+                 FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").child("name").addValueEventListener(new ValueEventListener() {
                      @Override
                      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                         UserProfile userProfile=dataSnapshot.getValue(UserProfile.class);
-                         if(userProfile==null);
-                         {
-                             userProfile=new UserProfile();
-                         }
-                         holder.msg.setText(x+"From "+userProfile.name+"\n"+userProfile.email);
+                         String userProfile=dataSnapshot.getValue(String.class);
+
+                         String a=x+"From "+userProfile+"\n"+n.id;
+                         holder.msg.setText(a);
                      }
 
                      @Override
@@ -146,6 +170,7 @@ ArrayList<String> rec=new ArrayList<String>();
 
                      }
                  });
+                 holder.img.setImageResource(R.drawable.customer_icon);
                  holder.btn.setText("Manage tables");
                  holder.btn.setOnClickListener(new View.OnClickListener() {
                      @Override
@@ -168,14 +193,19 @@ ArrayList<String> rec=new ArrayList<String>();
 
                  if (holder.msg.getText().toString().contains("Cutlery")) {
                      holder.img.setImageResource(R.drawable.cuttlery);
+                     holder.btn.setText("Send Cuttlery");
                  } else if (holder.msg.getText().toString().contains("waiter")) {
                      holder.img.setImageResource(R.drawable.callwaiter);
+                     holder.btn.setText("Send Waiter");
                  } else if (holder.msg.getText().toString().contains("bill")) {
+                     holder.btn.setText("Settle Bill");
                      holder.img.setImageResource(R.drawable.cook);
                  } else {
                      holder.img.setImageResource(R.drawable.report);
+                     holder.btn.setText("Serve now");
                  }
-                 holder.btn.setText("Serve now");
+
+
                  holder.btn.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
@@ -225,6 +255,8 @@ ArrayList<String> rec=new ArrayList<String>();
         }
         if(item.getItemId()==R.id.menu_logout)
         {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(resturant_id);
+
             SharedPreferences preferences =PreferenceManager.getDefaultSharedPreferences((NotificationActivity.this));
             SharedPreferences.Editor editor = preferences.edit();
             editor.clear();

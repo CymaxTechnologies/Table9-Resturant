@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +114,7 @@ public class NewClientActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull holder holder, int position) {
             final Notification n=data.get(position);
-
+          holder.txt.setText(n.message);
            holder. reject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -151,9 +153,10 @@ public class NewClientActivity extends AppCompatActivity {
         class  holder extends RecyclerView.ViewHolder
         {
             Button accept,reject;
-
+            TextView txt;
             public holder(@NonNull View itemView) {
                 super(itemView);
+                txt=itemView.findViewById(R.id.user_phone);
                 accept=itemView.findViewById(R.id.new_aarival_assign);
                 reject=itemView.findViewById(R.id.new_arrival_reject);
 

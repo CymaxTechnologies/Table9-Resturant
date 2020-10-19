@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
      EditText email,password;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                                       final String PREF_FILE_1 = "pref_file_1";
                                       SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                                       editor.putString("resturant_id", r.getData_id());
+                                      FirebaseMessaging.getInstance().subscribeToTopic(r.getData_id());
                                       editor.putString("name",r.name);
                                     //  editor.apply();
                                       editor.commit();

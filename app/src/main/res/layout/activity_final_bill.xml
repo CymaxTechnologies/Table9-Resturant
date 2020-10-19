@@ -47,7 +47,34 @@
            android:id="@+id/date"
            android:text="Date"></TextView>
    </LinearLayout>
+    <LinearLayout
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:padding="5dp"
+        >
+        <TextView
+            android:gravity="left"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:id="@+id/cname"
+            android:text="Table"></TextView>
+        <TextView
+            android:gravity="right"
+            android:textColor="@android:color/white"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:id="@+id/cphone"
+            android:text="Date"></TextView>
 
+    </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,6 +93,7 @@
             android:textSize="18sp"
             android:textStyle="bold"></TextView>
     <ImageButton
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/pdf">

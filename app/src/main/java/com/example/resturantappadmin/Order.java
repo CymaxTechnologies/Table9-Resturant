@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Order implements Serializable {
-    String order_id,customer_id,resturant_id,check_in_time,check_in_date,value,payment_method,rating;
+    String order_id,customer_id,resturant_id,check_in_time,check_in_date,value,payment_method,rating,status;
     Order()
     {
         order_id="";
@@ -16,7 +16,16 @@ public class Order implements Serializable {
         value="0";
         payment_method="";
         rating="";
+        status="";
 
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getOrder_id() {

@@ -234,21 +234,21 @@
                 android:orientation="horizontal"
                 android:weightSum="2"
                 android:layout_margin="5dp">
-                <Button
-                    android:background="@drawable/photo_48_orange"
+                <ImageView
+                    android:background="@android:color/transparent"
                     android:layout_weight="1"
-                    android:layout_margin="20dp"
-                    android:backgroundTint="@android:color/white"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:src="@drawable/add_image_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
 
-                    android:id="@+id/pictre"></Button>
+                    android:id="@+id/pictre"></ImageView>
                 <Button
+                    android:visibility="gone"
                     android:background="@drawable/video_48_orange"
                     android:layout_weight="1"
-                    android:layout_margin="20dp"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:backgroundTint="@android:color/white"
                     android:id="@+id/video"></Button>
 

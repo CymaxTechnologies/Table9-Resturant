@@ -9,6 +9,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
 import android.preference.PreferenceManager;
@@ -125,16 +127,46 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull final holder holder, int position) {
                       final Order order=o.get(position);
+                      holder.time.setText("Order at "+order.getCheck_in_time());
                       holder.recyclerView.setAdapter(new single_line_adapter(order.getCuisines(),order.getCount()));
                       holder.textView.setText(order.getValue()+"");
+                      String status=order.status;
+                      if(status.equals("Accepted"))
+                      {
+                          holder.time.setText("Order at "+order.getCheck_in_time());
+                          holder.accept.setBackgroundColor(Color.GRAY);
+                          holder.reject.setBackgroundColor(Color.GRAY);
+                          holder.accept.setEnabled(false);
+                          holder.reject.setEnabled(false);
+
+                      }
+                      if(status.equals("Served"))
+                      {
+                          holder.time.setText("Order at "+order.getCheck_in_time());
+                          holder.accept.setBackgroundColor(Color.GRAY);
+                          holder.reject.setBackgroundColor(Color.GRAY);
+                          holder.accept.setEnabled(false);
+                          holder.reject.setEnabled(false);
+                          holder.served.setEnabled(false);
+                          holder.served.setText("Completed");
+                      }
                       holder.served.setOnClickListener(new View.OnClickListener() {
                           @Override
                           public void onClick(View v) {
+                              holder.served.setText("Completed");
+
+                              Drawable img = getApplicationContext().getResources().getDrawable( R.drawable.ic_baseline_check_24);
+                              holder.reject.setEnabled(false);
+                              holder.reject.setBackgroundColor(Color.GRAY);
+                              holder.accept.setBackgroundColor(Color.GRAY);
+                              holder.served.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null);
                               DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("history").push();
                               ref.setValue(order);
-                              o.remove(order);
+                          //    o.remove(order);
+
+                              FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.getOrder_id()).child("status").setValue("Served");
                               ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.order_id);
-                              ref.removeValue();
+                             // ref.removeValue();
                               notifyDataSetChanged();
                               FirebaseDatabase.getInstance().getReference().child("user").child(order.getCustomer_id()).child("my_orders").child(resturant_id).child(order.order_id).child("status").setValue("Served");
 
@@ -145,10 +177,13 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                           @Override
                           public void onClick(View v) {
                               FirebaseDatabase.getInstance().getReference().child("user").child(order.getCustomer_id()).child("my_orders").child(resturant_id).child(order.order_id).child("status").setValue("Accepted");
+                              FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.getOrder_id()).child("status").setValue("Accepted");
 
                               //FirebaseDatabase.getInstance().getReference().child("user").child(order.customer_id).child("my_orders").child(resturant_id).child(order.getOrder_id()).child("status").setValue("Accepted");
                               holder.accept.setEnabled(false);
                               holder.reject.setEnabled(false);
+                              holder.reject.setBackgroundColor(Color.GRAY);
+                              holder.accept.setBackgroundColor(Color.GRAY);
                               Toast.makeText(getApplicationContext(),"Accepted",Toast.LENGTH_SHORT).show();
                           }
                       });
@@ -158,6 +193,8 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                               FirebaseDatabase.getInstance().getReference().child("user").child(order.customer_id).child("my_orders").child(resturant_id).child(order.getOrder_id()).child("status").setValue("Rejected");
                               holder.accept.setEnabled(false);
                               holder.reject.setEnabled(false);
+                              holder.reject.setBackgroundColor(Color.GRAY);
+                              holder.accept.setBackgroundColor(Color.GRAY);
                               DatabaseReference ref;
                               ref=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(order.table).child("pending").child(order.order_id);
                               ref.removeValue();
@@ -178,7 +215,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
             RecyclerView recyclerView;
             Button served;
             Button accept,reject;
-            TextView textView;
+            TextView textView,time;
             public holder(@NonNull View itemView) {
                 super(itemView);
                 recyclerView=itemView.findViewById(R.id.order_items);
@@ -188,6 +225,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
                 accept=itemView.findViewById(R.id.accept);
                 reject=itemView.findViewById(R.id.reject);
                 textView=itemView.findViewById(R.id.total_value);
+                time=itemView.findViewById(R.id.id_time);
 
             }
         }
@@ -201,7 +239,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull NotificationAdapter.holder holder, int position) {
+        public void onBindViewHolder(@NonNull final NotificationAdapter.holder holder, int position) {
             final Notification n=data.get(position);
             String m="Table no "+n.table_no+" "+n.message;
             holder.msg.setText(m);
@@ -225,10 +263,14 @@ public class DetailedOrderActtivity extends AppCompatActivity {
             holder.btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    holder.btn.setText("Completed");
+
+                    Drawable img = getApplicationContext().getResources().getDrawable( R.drawable.ic_baseline_check_24);
+                    holder.btn.setCompoundDrawablesWithIntrinsicBounds( img, null, null, null);
                     FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(n.id).removeValue();
                     Toast.makeText(getApplicationContext(),"Deleted Succesfully",Toast.LENGTH_SHORT).show();
                     data.remove(n);
-                    FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
+                   FirebaseDatabase.getInstance().getReference().child(n.resturant_id).child("orders").child(n.table_no).child("notification").child(n.id).removeValue();
                     notifyDataSetChanged();
                 }
             });

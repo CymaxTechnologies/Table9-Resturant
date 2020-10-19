@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -45,7 +47,8 @@ import java.util.UUID;
 
 public class AddItem extends AppCompatActivity {
     EditText name,ingredient,about,date,time,price,offer,discount;
-    Button picture,video,add;
+    Button video,add;
+    ImageView picture;
     String pic_path="";
     String video_path="";
     String resturant_id;
@@ -60,6 +63,7 @@ public class AddItem extends AppCompatActivity {
     String edate="";
     String stime="";
     String etime="";
+    Cuisine c;
     ProgressDialog  progressDialog;
 
     @Override
@@ -75,6 +79,7 @@ public class AddItem extends AppCompatActivity {
         resturant_name=prefs.getString("name","123");
         TextView t=(TextView)findViewById(R.id.rest);
         t.setText(resturant_name);
+        c=(Cuisine)getIntent().getSerializableExtra("cuisine");
 
         myRef = database.getReference().child(resturant_id).child("Cuisine");
         sd=(EditText) findViewById(R.id.date_start);
@@ -173,7 +178,7 @@ public class AddItem extends AppCompatActivity {
             }
         });
 
-        Cuisine c=new Cuisine();
+
         name=(EditText)findViewById(R.id.name);
         ingredient=(EditText)findViewById(R.id.ingredient);
         about=(EditText)findViewById(R.id.about);
@@ -182,9 +187,10 @@ public class AddItem extends AppCompatActivity {
         offer=(EditText)findViewById(R.id.offer);
         price=(EditText)findViewById(R.id.price);
         discount=(EditText)findViewById(R.id.discount);
-        picture=(Button)findViewById(R.id.pictre);
+        picture=(ImageView) findViewById(R.id.pictre);
         video=(Button)findViewById(R.id.video);
         add=(Button)findViewById(R.id.addItem);
+
         picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,41 +198,113 @@ public class AddItem extends AppCompatActivity {
                 uploadImage();
             }
         });
+        price.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                      discount.setText(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        if(c!=null)
+        {
+            name.setText(c.cousine_name);
+            ingredient.setText(c.ingredients);
+            about.setText(c.about);
+            String timing[]=c.getTimming().split("-");
+            String dates[]=c.getAvailability_dates().split("-");
+            st.setText(timing[0]);
+            ed.setText(dates[1]);
+            et.setText(timing[1]);
+            sd.setText(dates[0]);
+            price.setText(c.getPrice());
+            offer.setText(c.offer);
+            discount.setText(c.discount_price);
+        }
+        else
+        {
+            c=new Cuisine();
+        }
+
         add.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(final View v) {
                 progressDialog.show();
-                String date=sdate+"-"+edate;
-                String t=stime+"-"+etime;
-                Cuisine c=new Cuisine();
-                c.setCousine_name(name.getText().toString());
-                c.setIngredients(ingredient.getText().toString());
-                c.setAbout(ingredient.getText().toString());
-                c.setAvailability_dates(date);
-                c.setTimming(t);
-                c.setOffer(offer.getText().toString());
-                c.setDiscount_price(discount.getText().toString());
-                c.setPrice(price.getText().toString());
-                c.setPicture(pic_path);
-                c.setVideo(video_path);
-                DatabaseReference key=myRef.push();
-                c.setId(key.getKey());
-                key.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Snackbar.make(v,"Added succesfullly", BaseTransientBottomBar.LENGTH_LONG).show();
-                        progressDialog.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Snackbar.make(v,"Error occured", BaseTransientBottomBar.LENGTH_LONG).show();
-                        progressDialog.dismiss();
-                    }
-                });
+                String date;
+                String t;
+               if(c.getId().equals(""))
+               {
+                    date=sdate+"-"+edate;
+                    t=stime+"-"+etime;
+                   Cuisine c = new Cuisine();
+                   c.setCousine_name(name.getText().toString());
+                   c.setIngredients(ingredient.getText().toString());
+                   c.setAbout(ingredient.getText().toString());
+                   c.setAvailability_dates(date);
+                   c.setTimming(t);
+                   c.setOffer(offer.getText().toString());
+                   c.setDiscount_price(discount.getText().toString());
+                   c.setPrice(price.getText().toString());
+                   c.setPicture(pic_path);
+                   c.setVideo(video_path);
+                   DatabaseReference key = myRef.push();
+                   c.setId(key.getKey());
+                   key.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
+                       @Override
+                       public void onSuccess(Void aVoid) {
+                           Snackbar.make(v,"Added succesfullly", BaseTransientBottomBar.LENGTH_LONG).show();
+                           progressDialog.dismiss();
+                       }
+                   }).addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                           Snackbar.make(v,"Error occured", BaseTransientBottomBar.LENGTH_LONG).show();
+                           progressDialog.dismiss();
+                       }
+                   });
+               }
+               else {
+                   date = sd.getText() + "-" + ed.getText();
+                   t = st.getText() + "-" + et.getText();
 
 
+
+                   c.setCousine_name(name.getText().toString());
+                   c.setIngredients(ingredient.getText().toString());
+                   c.setAbout(ingredient.getText().toString());
+                   c.setAvailability_dates(date);
+                   c.setTimming(t);
+                   c.setOffer(offer.getText().toString());
+                   c.setDiscount_price(discount.getText().toString());
+                   c.setPrice(price.getText().toString());
+                   c.setPicture(pic_path);
+                   c.setVideo(video_path);
+                   DatabaseReference key = myRef.child(c.getId());
+
+                   key.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
+                       @Override
+                       public void onSuccess(Void aVoid) {
+                           Snackbar.make(v, "Added succesfullly", BaseTransientBottomBar.LENGTH_LONG).show();
+                           progressDialog.dismiss();
+                       }
+                   }).addOnFailureListener(new OnFailureListener() {
+                       @Override
+                       public void onFailure(@NonNull Exception e) {
+                           Snackbar.make(v, "Error occured", BaseTransientBottomBar.LENGTH_LONG).show();
+                           progressDialog.dismiss();
+                       }
+                   });
+
+               }
             }
         });
 

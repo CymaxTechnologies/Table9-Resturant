@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/finalize"
-        android:title="Edit"
-        app:showAsAction="always"
+        android:title="Settle Bill"
+        app:showAsAction="never"
         android:icon="@drawable/ic_baseline_check_24"></item>
     <item
         android:id="@+id/share"

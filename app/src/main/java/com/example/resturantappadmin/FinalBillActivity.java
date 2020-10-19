@@ -59,10 +59,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class FinalBillActivity extends AppCompatActivity {
-      TextView date,tt;
+      TextView date,tt,name,phone,ta;
       String resturant_id="";
       int total=0;
-      String table;
+      String table="";
       ImageButton img;
       boolean flag=true;
       Bitmap b;
@@ -72,6 +72,8 @@ public class FinalBillActivity extends AppCompatActivity {
       DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child(resturant_id);
       String resturant_name;
       String user_id="";
+      String user_name="";
+      String user_no="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,10 @@ public class FinalBillActivity extends AppCompatActivity {
         progressDialog.setTitle("T9 App");
         progressDialog.show();
         table=(String)getIntent().getStringExtra("table") ;
-
+        //tt=(TextView)findViewById(R.id.ctable);
+        name=(TextView)findViewById(R.id.cname);
+        phone=(TextView)findViewById(R.id.cphone);
+       // tt.setText(table);
        // resturant_id=(String)getIntent().getStringExtra("resturant_id");
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
@@ -91,6 +96,21 @@ public class FinalBillActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user_id=dataSnapshot.getValue(String.class);
+                FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("profile").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserProfile userProfile=dataSnapshot.getValue(UserProfile.class);
+                        user_name=userProfile.getName();
+                        user_no=userProfile.getPhone();
+                        phone.setText(user_no);
+                        name.setText(user_name);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -270,6 +290,25 @@ public class FinalBillActivity extends AppCompatActivity {
                                    String k=    FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").push().getKey();
 
                                       FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(k).setValue(history);
+                                      FirebaseDatabase.getInstance().getReference().child(resturant_id).child("noitifications").addListenerForSingleValueEvent(new ValueEventListener() {
+                                          @Override
+                                          public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                for(DataSnapshot d:dataSnapshot.getChildren())
+                                                {
+                                                    Notification n=d.getValue(Notification.class);
+                                                    if(n.table_no.equals(table))
+                                                    {
+                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(d.getKey()).removeValue();
+                                                    }
+                                                }
+
+                                          }
+
+                                          @Override
+                                          public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                          }
+                                      });
                                       FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
                                        FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                            @Override
@@ -328,7 +367,7 @@ public class FinalBillActivity extends AppCompatActivity {
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(FinalBillActivity.this);
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+            builder.setMessage("You want to settle payment to generate bill?").setPositiveButton("Yes", dialogClickListener)
                     .setNegativeButton("No", dialogClickListener).show();
 
 

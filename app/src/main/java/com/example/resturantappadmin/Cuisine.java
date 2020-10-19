@@ -15,6 +15,20 @@ public class Cuisine implements Serializable {
 
     Cuisine()
     {
+        this.resturant_id = "";
+        this.cousine_name = "";
+        this.id="";
+        this.ingredients = "ingredients";
+        this.about = "about";
+        this.picture = "picture";
+        this.video = "video";
+        this.price = "price";
+        this.availability_dates = "availability_dates";
+        this.timming = "timming";
+        this.no_of_times_ordered = "no_of_times_ordered";
+        this.rating = "rating";
+        this.discount_price = "discount_price";
+        this.offer = "offer";
 
     }
     public String getResturant_id() {
@@ -84,6 +98,7 @@ public class Cuisine implements Serializable {
     public Cuisine(String resturant_id, String cousine_name, String ingredients, String about, String picture, String video, String price, String availability_dates, String timming, String no_of_times_ordered, String rating, String discount_price, String offer) {
         this.resturant_id = "";
         this.cousine_name = "";
+        this.id="";
         this.ingredients = "ingredients";
         this.about = "about";
         this.picture = "picture";
