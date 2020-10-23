@@ -299,7 +299,7 @@ public class DetailedOrderActtivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.decmenu,menu);
         return super.onCreateOptionsMenu(menu);
     }
 

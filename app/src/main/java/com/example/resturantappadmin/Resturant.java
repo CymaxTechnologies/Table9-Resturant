@@ -5,6 +5,35 @@ public class Resturant {
     //Location location;
     String latitude;
 
+    public String getVerified() {
+        return verified;
+    }
+
+    public void setVerified(String verified) {
+        this.verified = verified;
+    }
+
+    String verified;
+
+    public String getInclusive() {
+        return inclusive;
+    }
+
+    public void setInclusive(String inclusive) {
+        this.inclusive = inclusive;
+    }
+
+    public int getGst() {
+        return gst;
+    }
+
+    public void setGst(int gst) {
+        this.gst = gst;
+    }
+
+    String inclusive;
+    int gst;
+
     public String getLatitude() {
         return latitude;
     }
@@ -128,6 +157,8 @@ public class Resturant {
       state="";
       latitude="";
       longitude="";
-
+      inclusive="yes";
+      gst=5;
+      verified="no";
     }
 }

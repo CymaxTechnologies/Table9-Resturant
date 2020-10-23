@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -18,13 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize">
-        <activity android:name=".SelectTableActivity"></activity>
+        <activity android:name=".signupActivity"></activity>
+        <activity android:name=".SelectTableActivity" />
         <activity android:name=".NewClientActivity" />
         <activity android:name=".FinalBillActivity" />
         <activity android:name=".DetailedOrderActtivity" />
-        <activity android:name=".NotificationActivity" >
-
-        </activity>
+        <activity android:name=".NotificationActivity"></activity>
         <activity android:name=".OrdersActivity" />
 
         <service android:name=".MyFireBaseMessagingService">
@@ -46,7 +45,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-         </activity>
+        </activity>
     </application>
 
 </manifest>

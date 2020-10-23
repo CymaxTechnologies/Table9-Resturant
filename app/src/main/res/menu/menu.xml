@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/finalize"
-        android:title="Settle Bill"
-        app:showAsAction="never"
-        android:icon="@drawable/ic_baseline_check_24"></item>
+
+
     <item
         android:id="@+id/share"
         android:title="Edit"
         app:showAsAction="always"
         android:icon="@drawable/ic_baseline_share_24"></item>
-    <item
-        android:id="@+id/edit"
-        android:title="Edit"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_baseline_edit_24"></item>
+
 
 </menu>

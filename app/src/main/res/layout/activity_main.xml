@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
+
     android:orientation="vertical"
     android:background="@drawable/background"
     android:layout_gravity="center_horizontal">
@@ -88,7 +88,7 @@
             android:layout_marginTop="30dp"
             android:textColor="@android:color/holo_blue_bright"
             android:textStyle="bold"
-            android:text="Login">
+            android:text="JOIN US!">
         </TextView>
     </LinearLayout>
 

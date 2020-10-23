@@ -92,13 +92,19 @@
             android:text="Total"
             android:textSize="18sp"
             android:textStyle="bold"></TextView>
-    <ImageButton
-        android:visibility="gone"
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extended_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/pdf">
+        android:layout_margin="16dp"
 
-    </ImageButton>
+        android:theme="@style/MyMaterialTheme"
+        android:padding="5dp"
+        android:layout_gravity="bottom|right"
+
+        android:text="Finalize Bill"
+        app:icon="@drawable/ic_baseline_check_24"/>
 
 
 

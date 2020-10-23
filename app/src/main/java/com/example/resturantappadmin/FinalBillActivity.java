@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -74,6 +75,7 @@ public class FinalBillActivity extends AppCompatActivity {
       String user_id="";
       String user_name="";
       String user_no="";
+      ExtendedFloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,131 @@ public class FinalBillActivity extends AppCompatActivity {
         //tt=(TextView)findViewById(R.id.ctable);
         name=(TextView)findViewById(R.id.cname);
         phone=(TextView)findViewById(R.id.cphone);
+        floatingActionButton=(ExtendedFloatingActionButton)findViewById(R.id.extended_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)  {
+
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                            {
+                                if(!flag)
+                                {
+                                    Toast.makeText(getApplicationContext(),"Bill is already generated You can share by pressing share Icon",Toast.LENGTH_LONG).show();
+                                    break;
+
+                                }
+                                flag=false;
+                                String key= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push().getKey();
+                                final OrderHistory history=new OrderHistory();
+                                history.setCount(integers);
+                                history.setCuisines(cuisineArrayList);
+                                history.setPrices(prices);
+                                history.setResturant_id(resturant_id);
+                                history.setUser_id(user_id);
+                                history.setTable(table);
+                                history.setDate(LocalDate.now().toString());
+                                history.setTime(LocalTime.now().toString());
+                                history.setPayment_method("");
+                                history.setRating("");
+                                history.setOrder_id(key);
+                                history.setResturant_name(resturant_name);
+                                FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").child(key).setValue(history).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        if(user_id!="")
+                                        {
+                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).removeValue();
+                                            String k=    FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").push().getKey();
+
+                                            FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(k).setValue(history);
+                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("noitifications").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    for(DataSnapshot d:dataSnapshot.getChildren())
+                                                    {
+                                                        Notification n=d.getValue(Notification.class);
+                                                        if(n.table_no.equals(table))
+                                                        {
+                                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(d.getKey()).removeValue();
+                                                        }
+                                                    }
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
+                                            FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
+                                        }
+
+                                    }
+                                });
+
+                                File file = new File(Environment.getExternalStorageDirectory() + "/Table9/");
+                                if (!file.mkdirs()) {
+                                    file.mkdirs();
+                                }
+                                PDFHelper pdfHelper=new PDFHelper(file,getApplicationContext());
+                                View view =(ScrollView)findViewById(R.id.scrol );
+
+                                b=pdfHelper.getBitmapFromView(view);
+                                //img.setImageBitmap(b);
+                                String message;
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                    message="Thank you for visiting us\nHere is your bill\nDate : "+LocalDate.now().toString()+"\n Time : "+LocalTime.now();
+                                }
+                                else
+                                {
+                                    message="Thank you for visiting us\nHere is your bill";
+
+                                }
+                                shareImage(b,message);
+                                pdfHelper.saveImageToPDF(view,b,new Date().toString()+"slip");
+                                //finish();
+                                Toast.makeText(getApplicationContext(),"Bill Generated Succesfully",Toast.LENGTH_LONG).show();
+                                break;
+
+                            }
+
+
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                            {
+                                dialog.dismiss();
+                                break;
+                            }
+
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(FinalBillActivity.this);
+                builder.setMessage("You want to settle payment to generate bill?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+
+            }
+        });
        // tt.setText(table);
        // resturant_id=(String)getIntent().getStringExtra("resturant_id");
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -125,7 +252,7 @@ public class FinalBillActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(FinalBillActivity.this));
         TextView ta=(TextView)findViewById(R.id.table);
         TextView date=(TextView)findViewById(R.id.date);
-        img=(ImageButton)findViewById(R.id.pdf);
+       // img=(ImageButton)findViewById(R.id.pdf);
         final TextView t=(TextView)findViewById(R.id.final_bill_total);
         date.setText(new Date().toString());
 
@@ -228,11 +355,8 @@ public class FinalBillActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.edit)
-        {
 
-        }
-        else if(item.getItemId()==R.id.share)
+        if(item.getItemId()==R.id.share)
         {
             if(b==null)
             {
@@ -250,128 +374,7 @@ public class FinalBillActivity extends AppCompatActivity {
             }
             shareImage(b,message);
         }
-        else
-        {
 
-            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which){
-                        case DialogInterface.BUTTON_POSITIVE:
-                        {
-                            if(!flag)
-                            {
-                                Toast.makeText(getApplicationContext(),"Bill is already generated You can share by pressing share Icon",Toast.LENGTH_LONG).show();
-                                break;
-
-                            }
-                            flag=false;
-                           String key= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push().getKey();
-                           final OrderHistory history=new OrderHistory();
-                           history.setCount(integers);
-                           history.setCuisines(cuisineArrayList);
-                           history.setPrices(prices);
-                           history.setResturant_id(resturant_id);
-                           history.setUser_id(user_id);
-                           history.setTable(table);
-                           history.setDate(LocalDate.now().toString());
-                           history.setTime(LocalTime.now().toString());
-                           history.setPayment_method("");
-                           history.setRating("");
-                           history.setOrder_id(key);
-                           history.setResturant_name(resturant_name);
-                           FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").child(key).setValue(history).addOnSuccessListener(new OnSuccessListener<Void>() {
-                               @Override
-                               public void onSuccess(Void aVoid) {
-                                   if(user_id!="")
-                                   {
-                                       FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).removeValue();
-                                   String k=    FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").push().getKey();
-
-                                      FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(k).setValue(history);
-                                      FirebaseDatabase.getInstance().getReference().child(resturant_id).child("noitifications").addListenerForSingleValueEvent(new ValueEventListener() {
-                                          @Override
-                                          public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                for(DataSnapshot d:dataSnapshot.getChildren())
-                                                {
-                                                    Notification n=d.getValue(Notification.class);
-                                                    if(n.table_no.equals(table))
-                                                    {
-                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(d.getKey()).removeValue();
-                                                    }
-                                                }
-
-                                          }
-
-                                          @Override
-                                          public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                          }
-                                      });
-                                      FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
-                                       FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                           @Override
-                                           public void onSuccess(Void aVoid) {
-
-                                           }
-                                       }).addOnFailureListener(new OnFailureListener() {
-                                           @Override
-                                           public void onFailure(@NonNull Exception e) {
-                                               Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                           }
-                                       });
-
-                                   }
-
-                               }
-                           });
-
-                            File file = new File(Environment.getExternalStorageDirectory() + "/Table9/");
-                            if (!file.mkdirs()) {
-                                file.mkdirs();
-                            }
-                            PDFHelper pdfHelper=new PDFHelper(file,getApplicationContext());
-                            View view =(ScrollView)findViewById(R.id.scrol );
-
-                             b=pdfHelper.getBitmapFromView(view);
-                            //img.setImageBitmap(b);
-                            String message;
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                message="Thank you for visiting us\nHere is your bill\nDate : "+LocalDate.now().toString()+"\n Time : "+LocalTime.now();
-                            }
-                            else
-                            {
-                                message="Thank you for visiting us\nHere is your bill";
-
-                            }
-                            shareImage(b,message);
-                            pdfHelper.saveImageToPDF(view,b,new Date().toString()+"slip");
-                            //finish();
-                            Toast.makeText(getApplicationContext(),"Bill Generated Succesfully",Toast.LENGTH_LONG).show();
-                           break;
-
-                        }
-
-
-
-                        case DialogInterface.BUTTON_NEGATIVE:
-
-                        {
-                            dialog.dismiss();
-                            break;
-                        }
-
-                    }
-                }
-            };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(FinalBillActivity.this);
-            builder.setMessage("You want to settle payment to generate bill?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
-
-
-        }
         return super.onOptionsItemSelected(item);
     }
 

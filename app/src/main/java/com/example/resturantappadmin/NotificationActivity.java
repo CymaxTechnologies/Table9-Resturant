@@ -75,6 +75,11 @@ ArrayList<String> rec=new ArrayList<String>();
              progressDialog.dismiss();
             }
         });
+      /*  ArrayList<String> not=new ArrayList<>();
+        for(Notification n:data)
+        {
+            if(not.contains(n.user_id))
+        }*/
     }
     class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.holder>
     {
@@ -88,6 +93,7 @@ ArrayList<String> rec=new ArrayList<String>();
         public void onBindViewHolder(@NonNull final holder holder, int position) {
              final Notification n=data.get(position);
              final String m="Table no "+n.table_no+" "+n.message;
+             System.out.println(n.message);
              if(n.message.contains("New Order"))
              {
                  FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").addValueEventListener(new ValueEventListener() {
@@ -98,7 +104,7 @@ ArrayList<String> rec=new ArrayList<String>();
                          {
                              userProfile=new UserProfile();
                          }
-                         String str="New order From Table no "+n.table_no;
+                         String str="New order From Table no "+n.table_no+"  "+n.time;
                          holder.msg.setText(str);
                      }
 
@@ -150,19 +156,14 @@ ArrayList<String> rec=new ArrayList<String>();
             }*/
              if(n.message.contains("waiting"))
              {  final String x="New Arrival \n";
-                      if(rec.contains(n.user_id))
-                      {
-                          return;
 
-                      }
-                      rec.add(n.resturant_id);
                  FirebaseDatabase.getInstance().getReference().child("user").child(n.user_id).child("profile").child("name").addValueEventListener(new ValueEventListener() {
                      @Override
                      public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                          String userProfile=dataSnapshot.getValue(String.class);
 
-                         String a=x+"From "+userProfile+"\n"+n.id;
-                         holder.msg.setText(a);
+                         String a="From "+userProfile+"\n"+n.id;
+                         holder.msg.setText(n.message);
                      }
 
                      @Override
@@ -193,10 +194,10 @@ ArrayList<String> rec=new ArrayList<String>();
 
                  if (holder.msg.getText().toString().contains("Cutlery")) {
                      holder.img.setImageResource(R.drawable.cuttlery);
-                     holder.btn.setText("Send Cuttlery");
+                     holder.btn.setText("Completed");
                  } else if (holder.msg.getText().toString().contains("waiter")) {
                      holder.img.setImageResource(R.drawable.callwaiter);
-                     holder.btn.setText("Send Waiter");
+                     holder.btn.setText("Completed");
                  } else if (holder.msg.getText().toString().contains("bill")) {
                      holder.btn.setText("Settle Bill");
                      holder.img.setImageResource(R.drawable.cook);

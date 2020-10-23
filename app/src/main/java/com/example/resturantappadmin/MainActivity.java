@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,10 +25,19 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class MainActivity extends AppCompatActivity {
      EditText email,password;
      Button login;
+     TextView signup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        signup=(TextView)findViewById(R.id.signup);
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),signupActivity.class));
+
+            }
+        });
         email=(EditText)findViewById(R.id.email);
         password=(EditText)findViewById(R.id.password);
         login=(Button) findViewById(R.id.login_button);
@@ -60,6 +70,11 @@ public class MainActivity extends AppCompatActivity {
                                   Resturant r=dataSnapshot.getValue(Resturant.class);
                                   if(r.password.equals(password.getText().toString()))
                                   {
+                                      if(r.verified.equals("no"))
+                                      {
+                                          Toast.makeText(getApplicationContext(),"Your resturant is not approved yet",Toast.LENGTH_LONG).show();
+                                          return;
+                                      }
                                       final String PREF_FILE_1 = "pref_file_1";
                                       SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                                       editor.putString("resturant_id", r.getData_id());
