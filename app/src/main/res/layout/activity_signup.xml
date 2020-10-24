@@ -204,6 +204,15 @@
                         android:hint="Password"
                         android:layout_margin="5dp"
                         android:background="@android:color/white"></EditText>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:id="@+id/rcpassword"
+                        android:inputType="textPassword"
+                        android:hint="Confirm"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/white"></EditText>
+
                     <Button
                         android:textColor="@android:color/white"
                         android:layout_width="match_parent"

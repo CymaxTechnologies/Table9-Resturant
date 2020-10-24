@@ -5,6 +5,16 @@ public class Resturant {
     //Location location;
     String latitude;
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    String date;
+
     public String getVerified() {
         return verified;
     }
@@ -160,5 +170,6 @@ public class Resturant {
       inclusive="yes";
       gst=5;
       verified="no";
+      date="";
     }
 }
