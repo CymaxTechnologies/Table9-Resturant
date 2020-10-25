@@ -19,6 +19,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +38,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
@@ -165,7 +168,8 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.show();
+            //    progressDialog.show();
+
                 if(name.getText().toString().isEmpty()||city.getText().toString().isEmpty()||pincode.getText().toString().isEmpty()||password.getText().toString().isEmpty())
                 {
                     progressDialog.dismiss();
@@ -195,6 +199,49 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
                                         TimeUnit.SECONDS,                // Unit of timeout
                                         signupActivity.this,        // Activity (for callback binding)
                                         mCallback);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(signupActivity.this);
+                                builder.setTitle("Enter Six digit code");
+
+// Set up the input
+                                final EditText input = new EditText(signupActivity.this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                                input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                                builder.setView(input);
+
+// Set up the buttons
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String  m_Text = input.getText().toString();
+                                        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode, m_Text);
+                                        FirebaseAuth.getInstance().signInWithCredential(credential)
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        if(task.isSuccessful())
+                                                        {
+                                                            Toast.makeText(getApplicationContext(),"Your request has been submitted will be appproved soon",Toast.LENGTH_LONG).show();
+                                                            verifyCode();
+                                                            finish();
+                                                        }
+                                                        else
+                                                        {
+                                                            Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+
+                                                        }
+
+                                                    }
+                                                });
+                                    }
+                                });
+                                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                                builder.show();
                             }
                         }
 
@@ -359,14 +406,14 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
-                {progressDialog.dismiss();
+                {//progressDialog.dismiss();
                 FirebaseDatabase.getInstance().getReference().child("resturants").child(resturant.data_id).setValue(resturant);
                     Toast.makeText(getApplicationContext(),"Your request has been submitted will be approved soon ",Toast.LENGTH_LONG).show();
                     finish();
                 }
                 else
                 {
-                    progressDialog.dismiss();
+                   // progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
 
                 }
