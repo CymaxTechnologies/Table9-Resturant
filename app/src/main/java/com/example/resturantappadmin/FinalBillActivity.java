@@ -186,7 +186,7 @@ public class FinalBillActivity extends AppCompatActivity {
                                     message="Thank you for visiting us\nHere is your bill";
 
                                 }
-                                shareImage(b,message);
+//                                shareImage(b,message);
                                 pdfHelper.saveImageToPDF(view,b,new Date().toString()+"slip");
                                 //finish();
                                 Toast.makeText(getApplicationContext(),"Bill Generated Succesfully",Toast.LENGTH_LONG).show();

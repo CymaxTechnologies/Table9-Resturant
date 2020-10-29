@@ -201,7 +201,7 @@
                         android:layout_height="50dp"
                         android:id="@+id/rpassword"
                         android:inputType="textPassword"
-                        android:hint="Password"
+                        android:hint="Min six digit Password"
                         android:layout_margin="5dp"
                         android:background="@android:color/white"></EditText>
                     <EditText

@@ -31,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EventListener;
 
 public class NotificationActivity extends AppCompatActivity {
@@ -66,6 +68,7 @@ ArrayList<String> rec=new ArrayList<String>();
                {
                    data.add(d.getValue(Notification.class));
                }
+                Collections.reverse(data);
                recyclerView.setAdapter(new NotificationAdapter());
                progressDialog.dismiss();
             }
@@ -105,7 +108,7 @@ ArrayList<String> rec=new ArrayList<String>();
                              userProfile=new UserProfile();
                          }
                          String str="New order From Table no "+n.table_no+"  "+n.time;
-                         holder.msg.setText(str);
+                         holder.msg.setText(m);
                      }
 
                      @Override

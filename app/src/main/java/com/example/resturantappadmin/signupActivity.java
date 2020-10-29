@@ -177,6 +177,11 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
                 }
                 else
                 {
+                    if(password.getText().toString().length()<6)
+                    {
+                        Toast.makeText(getApplicationContext(),"Password length should be minn 6 digits",Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     if(!password.getText().toString().equals(cpassword.getText().toString()))
                     {
                         progressDialog.dismiss();
@@ -402,12 +407,12 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
       resturant.state=state.getText().toString();
       resturant.pincode=pincode.getText().toString();
       resturant.password=password.getText().toString();
-        FirebaseDatabase.getInstance().getReference().child("resturants_request").child(resturant.data_id).setValue(resturant).addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseDatabase.getInstance().getReference().child("resturants_request").child(resturant.city.toLowerCase()).child(resturant.data_id).setValue(resturant).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful())
                 {//progressDialog.dismiss();
-                FirebaseDatabase.getInstance().getReference().child("resturants").child(resturant.data_id).setValue(resturant);
+                FirebaseDatabase.getInstance().getReference().child("resturants").child(resturant.city.toLowerCase()).child(resturant.data_id).setValue(resturant);
                     Toast.makeText(getApplicationContext(),"Your request has been submitted will be approved soon ",Toast.LENGTH_LONG).show();
                     finish();
                 }

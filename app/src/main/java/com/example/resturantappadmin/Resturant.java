@@ -2,8 +2,27 @@ package com.example.resturantappadmin;
 
 public class Resturant {
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
     //Location location;
+    int count;
     String latitude;
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    float rating;
 
     public String getDate() {
         return date;
@@ -152,9 +171,21 @@ public class Resturant {
         this.state = state;
     }
 
-    String address,category,city,contact,data_id,image,login_no,name,password,pincode,state;
+    String address,category,city,contact,data_id,image,login_no,name,password,pincode,state,resturant_name;
+
+    public String getResturant_name() {
+        return resturant_name;
+    }
+
+    public void setResturant_name(String resturant_name) {
+        this.resturant_name = resturant_name;
+    }
+
     Resturant()
     {
+
+        rating=0;
+        resturant_name="";
       address="";
       category="";
       city="";
@@ -171,5 +202,6 @@ public class Resturant {
       gst=5;
       verified="no";
       date="";
+      count=0;;
     }
 }

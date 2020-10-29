@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class NewClientActivity extends AppCompatActivity {
@@ -167,7 +169,7 @@ public class NewClientActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String returnedResult = data.getData().toString();
+                final String returnedResult = data.getData().toString();
                 FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(returnedResult).child("user").setValue(no.user_id);
                 FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(no.user_id).setValue(returnedResult).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -176,7 +178,37 @@ public class NewClientActivity extends AppCompatActivity {
                            @Override
                            public void onSuccess(Void aVoid) {
                             //   FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(no.user_id).removeValue();
+                       FirebaseDatabase.getInstance().getReference().child(resturant_id).child("outside").child(no.user_id).addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                               Notification no=new Notification();
+                               no.setResturant_id(resturant_id);
+                               no.setTable_no(returnedResult);
+                               no.setMessage("New Order at table "+returnedResult);
+                               no.setTime(new Date().toString());
+                               no.setUser_id(no.user_id);
 
+                               for(DataSnapshot d:dataSnapshot.getChildren())
+                               {
+                                   Order  o=d.getValue(Order.class);
+
+                                   DatabaseReference key=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(returnedResult).child("pending").push();
+                                   o.setOrder_id(key.getKey());
+                                   o.setTable(returnedResult);
+                                   key.setValue(o);
+                                   FirebaseDatabase.getInstance().getReference().child("user").child(o.getCustomer_id()).child("my_orders").child(resturant_id).child(o.order_id).setValue(o);
+                                   d.getRef().removeValue();
+                                   DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").push();
+                                   no.setId(reference.getKey());
+                                   reference.setValue(no);
+                               }
+                           }
+
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                           }
+                       });
                            }
                        });
                         try {

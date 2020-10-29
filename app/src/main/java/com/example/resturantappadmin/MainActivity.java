@@ -60,46 +60,52 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
 
-                    FirebaseDatabase.getInstance().getReference().child("resturants").child(email.getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    FirebaseDatabase.getInstance().getReference().child("resturants").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Toast.makeText(getApplicationContext(),"Enter",Toast.LENGTH_SHORT).show();
+                        public void onDataChange(@NonNull DataSnapshot d) {
+                           // Toast.makeText(getApplicationContext(),"Enter",Toast.LENGTH_SHORT).show();
+                                 for(DataSnapshot a:d.getChildren())
+                                 {
+                                    for(DataSnapshot dataSnapshot:a.getChildren())
+                                    {
+                                        if(email.getText().toString().equals(dataSnapshot.getKey()))
+                                        {
+                                            Resturant r=dataSnapshot.getValue(Resturant.class);
+                                            if(r.password.equals(password.getText().toString()))
+                                            {
+                                                if(r.verified.equals("no"))
+                                                {
+                                                    Toast.makeText(getApplicationContext(),"Your resturant is not approved yet",Toast.LENGTH_LONG).show();
+                                                    return;
+                                                }
+                                                final String PREF_FILE_1 = "pref_file_1";
+                                                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                                                editor.putString("resturant_id", r.getData_id());
+                                                FirebaseMessaging.getInstance().subscribeToTopic(r.getData_id());
+                                                editor.putString("name",r.name);
+                                                //  editor.apply();
+                                                editor.commit();
+                                                Toast.makeText(getApplicationContext(),"Login Succesfully",Toast.LENGTH_SHORT).show();
 
-                            if(true)
-                            {
-                                  Resturant r=dataSnapshot.getValue(Resturant.class);
-                                  if(r.password.equals(password.getText().toString()))
-                                  {
-                                      if(r.verified.equals("no"))
-                                      {
-                                          Toast.makeText(getApplicationContext(),"Your resturant is not approved yet",Toast.LENGTH_LONG).show();
-                                          return;
-                                      }
-                                      final String PREF_FILE_1 = "pref_file_1";
-                                      SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-                                      editor.putString("resturant_id", r.getData_id());
-                                      FirebaseMessaging.getInstance().subscribeToTopic(r.getData_id());
-                                      editor.putString("name",r.name);
-                                    //  editor.apply();
-                                      editor.commit();
-                                      Toast.makeText(getApplicationContext(),"Login Succesfully",Toast.LENGTH_SHORT).show();
+                                                Intent i=   new Intent(getApplicationContext(),NotificationActivity.class);
 
-                                      Intent i=   new Intent(getApplicationContext(),NotificationActivity.class);
+                                                startActivity(i);
+                                                finish();
+                                            }
+                                            else
+                                            {
+                                                Toast.makeText(getApplicationContext(),"Password dont match",Toast.LENGTH_SHORT).show();
 
-                                      startActivity(i);
-                                      finish();
-                                  }
-                                  else
-                                  {
-                                      Toast.makeText(getApplicationContext(),"Password dont match",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(getApplicationContext(),"No such number registeres",Toast.LENGTH_SHORT).show();
 
-                                  }
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),"No such number registeres",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                 }
 
-                            }
                         }
 
                         @Override

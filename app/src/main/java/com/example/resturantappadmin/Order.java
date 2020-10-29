@@ -5,9 +5,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Order implements Serializable {
-    String order_id,customer_id,resturant_id,check_in_time,check_in_date,value,payment_method,rating,status;
+    String order_id,customer_id,resturant_id,check_in_time,check_in_date,value,payment_method,rating,status,resturant_name;
+
+    public String getResturant_name() {
+        return resturant_name;
+    }
+
+    public void setResturant_name(String resturant_name) {
+        this.resturant_name = resturant_name;
+    }
+
     Order()
     {
+        resturant_name="";
         order_id="";
         customer_id="";
         resturant_id="";

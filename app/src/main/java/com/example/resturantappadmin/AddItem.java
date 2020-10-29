@@ -219,12 +219,16 @@ public class AddItem extends AppCompatActivity {
             name.setText(c.cousine_name);
             ingredient.setText(c.ingredients);
             about.setText(c.about);
-            String timing[]=c.getTimming().split("-");
-            String dates[]=c.getAvailability_dates().split("-");
-            st.setText(timing[0]);
-            ed.setText(dates[1]);
-            et.setText(timing[1]);
-            sd.setText(dates[0]);
+            if(c.getTimming()!=""&&c.getTimming()!=null&&!c.getTimming().equals("-"))
+            {
+                String timing[]=c.getTimming().split("-");
+                String dates[]=c.getAvailability_dates().split("-");
+                st.setText(timing[0]);
+                ed.setText(dates[1]);
+                et.setText(timing[1]);
+                sd.setText(dates[0]);
+            }
+            add.setText("Done");
             price.setText(c.getPrice());
             offer.setText(c.offer);
             discount.setText(c.discount_price);
@@ -248,7 +252,7 @@ public class AddItem extends AppCompatActivity {
                    Cuisine c = new Cuisine();
                    c.setCousine_name(name.getText().toString());
                    c.setIngredients(ingredient.getText().toString());
-                   c.setAbout(ingredient.getText().toString());
+                   c.setAbout(about.getText().toString());
                    c.setAvailability_dates(date);
                    c.setTimming(t);
                    c.setOffer(offer.getText().toString());
@@ -280,7 +284,7 @@ public class AddItem extends AppCompatActivity {
 
                    c.setCousine_name(name.getText().toString());
                    c.setIngredients(ingredient.getText().toString());
-                   c.setAbout(ingredient.getText().toString());
+                   c.setAbout(about.getText().toString());
                    c.setAvailability_dates(date);
                    c.setTimming(t);
                    c.setOffer(offer.getText().toString());
