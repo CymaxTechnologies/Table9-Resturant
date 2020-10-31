@@ -46,7 +46,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class AddItem extends AppCompatActivity {
-    EditText name,ingredient,about,date,time,price,offer,discount;
+    EditText name,ingredient,about,date,time,price,offer,discount,cuisine_name_edit;
     Button video,add;
     ImageView picture;
     String pic_path="";
@@ -63,6 +63,8 @@ public class AddItem extends AppCompatActivity {
     String edate="";
     String stime="";
     String etime="";
+    String cuisine_name;
+
     Cuisine c;
     ProgressDialog  progressDialog;
 
@@ -81,7 +83,7 @@ public class AddItem extends AppCompatActivity {
         t.setText(resturant_name);
         c=(Cuisine)getIntent().getSerializableExtra("cuisine");
 
-        myRef = database.getReference().child(resturant_id).child("Cuisine");
+        myRef = database.getReference().child(resturant_id).child("cuisines");
         sd=(EditText) findViewById(R.id.date_start);
         ed=(EditText) findViewById(R.id.date_end);
         st=(EditText) findViewById(R.id.time_start);
@@ -183,7 +185,7 @@ public class AddItem extends AppCompatActivity {
         ingredient=(EditText)findViewById(R.id.ingredient);
         about=(EditText)findViewById(R.id.about);
 
-
+        cuisine_name_edit=(EditText)findViewById(R.id.cuisine) ;
         offer=(EditText)findViewById(R.id.offer);
         price=(EditText)findViewById(R.id.price);
         discount=(EditText)findViewById(R.id.discount);
@@ -232,6 +234,8 @@ public class AddItem extends AppCompatActivity {
             price.setText(c.getPrice());
             offer.setText(c.offer);
             discount.setText(c.discount_price);
+            cuisine_name_edit.setText(c.cuisine);
+
         }
         else
         {
@@ -247,9 +251,15 @@ public class AddItem extends AppCompatActivity {
                 String t;
                if(c.getId().equals(""))
                {
+                   if(cuisine_name_edit.getText().toString().isEmpty())
+                   {
+                       Toast.makeText(getApplicationContext(),"Cuisine Name is required",Toast.LENGTH_LONG).show();
+                       return;
+                   }
                     date=sdate+"-"+edate;
                     t=stime+"-"+etime;
                    Cuisine c = new Cuisine();
+                   c.setCuisine(cuisine_name_edit.getText().toString());
                    c.setCousine_name(name.getText().toString());
                    c.setIngredients(ingredient.getText().toString());
                    c.setAbout(about.getText().toString());
@@ -260,7 +270,7 @@ public class AddItem extends AppCompatActivity {
                    c.setPrice(price.getText().toString());
                    c.setPicture(pic_path);
                    c.setVideo(video_path);
-                   DatabaseReference key = myRef.push();
+                   DatabaseReference key = myRef.child(c.getCuisine()).push();
                    c.setId(key.getKey());
                    key.setValue(c).addOnSuccessListener(new OnSuccessListener<Void>() {
                        @Override

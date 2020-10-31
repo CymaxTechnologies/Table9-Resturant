@@ -77,7 +77,14 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="20dp">
-
+            <EditText
+                android:id="@+id/cuisine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Cuisine Name"></EditText>
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
@@ -85,7 +92,7 @@
                 android:layout_margin="5dp"
                 android:height="50dp"
                 android:background="@drawable/edittext"
-                android:hint="Name"></EditText>
+                android:hint="Dish Name"></EditText>
 
             <EditText
                 android:id="@+id/ingredient"

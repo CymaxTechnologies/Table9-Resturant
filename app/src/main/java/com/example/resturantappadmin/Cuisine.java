@@ -4,6 +4,16 @@ import java.io.Serializable;
 
 public class Cuisine implements Serializable {
     String id;
+    String cuisine;
+    String veg_nonveg="veg";
+
+    public String getCuisine() {
+        return cuisine;
+    }
+
+    public void setCuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
 
     public String getId() {
         return id;
@@ -15,6 +25,7 @@ public class Cuisine implements Serializable {
 
     Cuisine()
     {
+
         this.resturant_id = "";
         this.cousine_name = "";
         this.id="";
@@ -154,5 +165,13 @@ public class Cuisine implements Serializable {
 
     String resturant_id,cousine_name,ingredients,about,picture,video,price,availability_dates,timming,no_of_times_ordered,rating;
     String discount_price,offer;
+
+    public String getVeg_nonveg() {
+        return veg_nonveg;
+    }
+
+    public void setVeg_nonveg(String veg_nonveg) {
+        this.veg_nonveg = veg_nonveg;
+    }
 }
 

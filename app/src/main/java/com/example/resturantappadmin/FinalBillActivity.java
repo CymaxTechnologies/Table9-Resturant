@@ -38,8 +38,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,6 +113,8 @@ public class FinalBillActivity extends AppCompatActivity {
                                 String key= FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").push().getKey();
                                 final OrderHistory history=new OrderHistory();
                                 history.setCount(integers);
+                                history.setTotal(total);
+
                                 history.setCuisines(cuisineArrayList);
                                 history.setPrices(prices);
                                 history.setResturant_id(resturant_id);
@@ -122,51 +126,62 @@ public class FinalBillActivity extends AppCompatActivity {
                                 history.setRating("");
                                 history.setOrder_id(key);
                                 history.setResturant_name(resturant_name);
-                                FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").child(key).setValue(history).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference().child("history").push();
+                                history.setOrder_id(databaseReference.getKey());
+                                databaseReference.setValue(history).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
-                                    public void onSuccess(Void aVoid) {
-                                        if(user_id!="")
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful())
                                         {
-                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).removeValue();
-                                            String k=    FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").push().getKey();
-
-                                            FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(k).setValue(history);
-                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("noitifications").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("history").child(history.getOrder_id()).setValue(history.getOrder_id()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    for(DataSnapshot d:dataSnapshot.getChildren())
+                                                public void onSuccess(Void aVoid) {
+                                                    if(user_id!="")
                                                     {
-                                                        Notification n=d.getValue(Notification.class);
-                                                        if(n.table_no.equals(table))
-                                                        {
-                                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(d.getKey()).removeValue();
-                                                        }
+                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(table).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("history").child(history.getOrder_id()).setValue(history.getOrder_id());
+
+
+                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("noitifications").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                for(DataSnapshot d:dataSnapshot.getChildren())
+                                                                {
+                                                                    Notification n=d.getValue(Notification.class);
+                                                                    if(n.table_no.equals(table))
+                                                                    {
+                                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").child(d.getKey()).removeValue();
+                                                                    }
+                                                                }
+
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                                        FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
+                                                        FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                                                            }
+                                                        });
+
                                                     }
 
                                                 }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                                }
                                             });
-                                            FirebaseDatabase.getInstance().getReference().child(resturant_id).child("table_assignment").child(user_id).removeValue();
-                                            FirebaseDatabase.getInstance().getReference().child("user").child(user_id).child("my_orders").child(resturant_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-
                                         }
-
                                     }
                                 });
+
 
                                 File file = new File(Environment.getExternalStorageDirectory() + "/Table9/");
                                 if (!file.mkdirs()) {

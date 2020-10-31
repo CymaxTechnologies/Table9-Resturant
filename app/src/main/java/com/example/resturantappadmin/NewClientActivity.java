@@ -192,10 +192,10 @@ public class NewClientActivity extends AppCompatActivity {
                                {
                                    Order  o=d.getValue(Order.class);
 
-                                   DatabaseReference key=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(returnedResult).child("pending").push();
-                                   o.setOrder_id(key.getKey());
+                                   DatabaseReference key=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("orders").child(returnedResult).child("pending");
+
                                    o.setTable(returnedResult);
-                                   key.setValue(o);
+                                   key.child(o.order_id).setValue(o);
                                    FirebaseDatabase.getInstance().getReference().child("user").child(o.getCustomer_id()).child("my_orders").child(resturant_id).child(o.order_id).setValue(o);
                                    d.getRef().removeValue();
                                    DatabaseReference reference=FirebaseDatabase.getInstance().getReference().child(resturant_id).child("notifications").push();

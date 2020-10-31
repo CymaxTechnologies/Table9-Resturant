@@ -5,8 +5,18 @@ import java.util.ArrayList;
 public class OrderHistory {
     String user_id,resturant_id,resturant_name,table,time,date,payment_method,rating,order_id;
     ArrayList<Cuisine> cuisines=new ArrayList<>();
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
     ArrayList<Integer> count=new ArrayList<>();
     ArrayList<String> prices=new ArrayList<>();
+    float total=0;
 
     public String getOrder_id() {
         return order_id;
