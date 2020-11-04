@@ -207,6 +207,7 @@ ArrayList<String> rec=new ArrayList<String>();
                  } else {
                      holder.img.setImageResource(R.drawable.report);
                      holder.btn.setText("Serve now");
+                     holder.msg.setText("Table no "+n.table_no+"\n"+n.message);
                  }
 
 
