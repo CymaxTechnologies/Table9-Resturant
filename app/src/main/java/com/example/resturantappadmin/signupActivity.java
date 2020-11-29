@@ -279,7 +279,35 @@ public class signupActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        resturant.setGst(Integer.parseInt(gstr[position].substring(0,1)));
+        switch (position)
+        {  case 0:
+        {
+            resturant.gst=0;
+            break;
+        }
+            case 1:
+            {
+                resturant.gst=5;
+                break;
+            }
+            case 2:
+            {
+                resturant.gst=12;
+                break;
+            }
+            case 3:
+            {
+                resturant.gst=18;
+                break;
+            }
+            case 4:
+            {
+                resturant.gst=24;
+                break;
+            }
+
+
+        }
     }
 
     @Override

@@ -9,6 +9,10 @@
         android:title="Cuisine"
         android:icon="@drawable/add"
         ></item>
+    <item android:id="@+id/setting"
+        android:title="Settings"
+
+        ></item>
     <item
         android:id="@+id/menu_logout"
         android:title="Logout">

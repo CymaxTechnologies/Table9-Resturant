@@ -3,7 +3,6 @@
     package="com.example.resturantappadmin">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -21,12 +20,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustResize">
-        <activity android:name=".signupActivity"></activity>
+        <activity android:name=".ResturantSettings"></activity>
+        <activity android:name=".signupActivity" />
         <activity android:name=".SelectTableActivity" />
         <activity android:name=".NewClientActivity" />
         <activity android:name=".FinalBillActivity" />
         <activity android:name=".DetailedOrderActtivity" />
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".NotificationActivity" />
         <activity android:name=".OrdersActivity" />
 
         <service android:name=".MyFireBaseMessagingService">

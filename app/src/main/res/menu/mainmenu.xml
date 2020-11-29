@@ -6,9 +6,14 @@
     android:icon="@drawable/notification_white_24"
     app:showAsAction="always"
     ></item>
+    <item android:id="@+id/setting"
+        android:title="Orders"
+        android:icon="@drawable/table_occupied"
+        app:showAsAction="always"
+        ></item>
     <item android:id="@+id/food"
         android:title="Orders"
-        android:icon="@drawable/ic_baseline_fastfood_24"
+        android:icon="@drawable/table_icon"
         app:showAsAction="always"
         ></item>
     <item android:id="@+id/logout"

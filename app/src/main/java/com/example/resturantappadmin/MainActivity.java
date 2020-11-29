@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
       String resturant__name=prefs.getString("name","123");
       if(!resturant_id.equals("123"))
       {
+
           startActivity(new Intent(getApplicationContext(),NotificationActivity.class));
           finish();
       }
@@ -63,29 +64,36 @@ public class MainActivity extends AppCompatActivity {
                     FirebaseDatabase.getInstance().getReference().child("resturants").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot d) {
-                           // Toast.makeText(getApplicationContext(),"Enter",Toast.LENGTH_SHORT).show();
+                           Toast.makeText(getApplicationContext(),"Enter",Toast.LENGTH_SHORT).show();
                                  for(DataSnapshot a:d.getChildren())
                                  {
                                     for(DataSnapshot dataSnapshot:a.getChildren())
                                     {
+                                       // Toast.makeText(MainActivity.this,a.getKey(),Toast.LENGTH_LONG).show();;
+
                                         if(email.getText().toString().equals(dataSnapshot.getKey()))
                                         {
                                             Resturant r=dataSnapshot.getValue(Resturant.class);
+                                           // Toast.makeText(MainActivity.this,"Testing",Toast.LENGTH_LONG).show();;
+
                                             if(r.password.equals(password.getText().toString()))
                                             {
+                                                Toast.makeText(MainActivity.this,"Testing",Toast.LENGTH_LONG).show();;
                                                 if(r.verified.equals("no"))
                                                 {
-                                                    Toast.makeText(getApplicationContext(),"Your resturant is not approved yet",Toast.LENGTH_LONG).show();
+                                                   // Toast.makeText(getApplicationContext(),"Your resturant is not approved yet",Toast.LENGTH_LONG).show();
                                                     return;
                                                 }
                                                 final String PREF_FILE_1 = "pref_file_1";
                                                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
                                                 editor.putString("resturant_id", r.getData_id());
+                                                editor.putString("resturant_key", dataSnapshot.getKey());
+                                                editor.putString("city",a.getKey());
                                                 FirebaseMessaging.getInstance().subscribeToTopic(r.getData_id());
                                                 editor.putString("name",r.name);
                                                 //  editor.apply();
                                                 editor.commit();
-                                                Toast.makeText(getApplicationContext(),"Login Succesfully",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplicationContext(),"Login Succesfully  : "+a.getKey(),Toast.LENGTH_SHORT).show();
 
                                                 Intent i=   new Intent(getApplicationContext(),NotificationActivity.class);
 
@@ -100,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         else
                                         {
-                                            Toast.makeText(getApplicationContext(),"No such number registeres",Toast.LENGTH_SHORT).show();
+                                          //  Toast.makeText(getApplicationContext(),"Noo such number registeres",Toast.LENGTH_SHORT).show();
 
                                         }
                                     }

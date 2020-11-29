@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.internal.Objects;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ public class NotificationActivity extends AppCompatActivity {
     String resturant_name="";
 ArrayList<Notification> data=new ArrayList<>();
 ArrayList<String> rec=new ArrayList<String>();
+String city="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ ArrayList<String> rec=new ArrayList<String>();
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         resturant_id=prefs.getString("resturant_id","123");
         resturant_name=prefs.getString("name","123");
+        city=prefs.getString("city","123");
         TextView t=(TextView)findViewById(R.id.rest);
         t.setText(resturant_name);
         final ProgressDialog progressDialog=new ProgressDialog(NotificationActivity.this);
@@ -274,6 +277,11 @@ ArrayList<String> rec=new ArrayList<String>();
         if(item.getItemId()==R.id.menu_orders)
         {
             startActivity(new Intent(getApplicationContext(),OrdersActivity.class));
+        }
+        if(item.getItemId()==R.id.setting)
+        {
+            startActivity(new Intent(getApplicationContext(),ResturantSettings.class));
+
         }
 
         return super.onOptionsItemSelected(item);

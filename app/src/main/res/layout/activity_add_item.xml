@@ -134,9 +134,10 @@
                     <EditText
                         android:background="@drawable/edittext"
                         android:layout_weight="1"
+
                         android:layout_width="30dp"
                         android:layout_height="50dp"
-                        android:hint="9/11"
+                        android:hint="1/1"
                         android:id="@+id/date_start"
                         ></EditText>
                     <TextView
@@ -154,7 +155,7 @@
 
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:hint="9/11"></EditText>
+                        android:hint="31/12"></EditText>
 
 
                 </LinearLayout>
@@ -185,6 +186,7 @@
                         android:layout_width="30dp"
                         android:layout_height="50dp"
                         android:hint="9:00 AM"
+                        android:text="11:00 AM"
                         android:id="@+id/time_start"
                         ></EditText>
                     <TextView
@@ -199,7 +201,7 @@
                         android:id="@+id/time_end"
                         android:background="@drawable/edittext"
                         android:layout_weight="1"
-
+                        android:text="10:30 PM"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:hint="6:00PM"></EditText>
@@ -241,6 +243,7 @@
                 android:orientation="horizontal"
                 android:weightSum="2"
                 android:layout_margin="5dp">
+
                 <ImageView
                     android:background="@android:color/transparent"
                     android:layout_weight="1"
@@ -249,6 +252,14 @@
                     android:layout_height="50dp"
 
                     android:id="@+id/pictre"></ImageView>
+                <CheckBox
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Non_Veg"
+
+                    android:textColor="@android:color/white"
+                    android:id="@+id/chk_non_veg"></CheckBox>
                 <Button
                     android:visibility="gone"
                     android:background="@drawable/video_48_orange"

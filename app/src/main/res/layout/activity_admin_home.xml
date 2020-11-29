@@ -61,12 +61,16 @@
 
 
     </androidx.cardview.widget.CardView>
-    <androidx.appcompat.widget.SearchView
+    <EditText
         android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:hint="Search Cuisine or Dish"
         android:layout_margin="10dp"
-        android:background="@drawable/circle"
+        android:drawablePadding="5dp"
+        android:background="@drawable/borderededittext"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
+
         app:queryHint="Search Dish" />
     <FrameLayout
         android:layout_width="match_parent"
@@ -74,12 +78,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/cart_items">
+            <ExpandableListView
+                android:scrollbars="none"
 
-            </androidx.recyclerview.widget.RecyclerView>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/expandablelistview"></ExpandableListView>
         </LinearLayout>
 
         <ImageButton
